@@ -25,11 +25,10 @@ import * as feathers from 'feathers/client';
 import * as hooks from 'feathers-hooks';
 import * as rest from 'feathers-rest-arachne/client';
 import * as superagent from 'superagent';
-import { get } from 'lodash';
+import { get, set } from 'lodash';
 import { SubmissionError } from 'redux-form';
 import Auth from 'services/Auth';
 import { Api as OhdsiApi } from 'ohdsi-ui-toolbox';
-import set from 'lodash/set';
 
 import { authTokenName } from 'const';
 
