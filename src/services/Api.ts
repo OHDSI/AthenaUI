@@ -29,6 +29,7 @@ import { get } from 'lodash';
 import { SubmissionError } from 'redux-form';
 import Auth from 'services/Auth';
 import { Api as OhdsiApi } from 'ohdsi-ui-toolbox';
+import set from 'lodash/set';
 
 import { authTokenName } from 'const';
 
@@ -83,10 +84,11 @@ function configure(props: ApiConfig): Promise<any> {
       } else {
         const validationErrors = get(hook, 'error.validatorErrors');
         if (validationErrors) {
-          throw new SubmissionError({
+          const errors = {
             _error: get(hook, 'error.errorMessage', ''),
-            ...validationErrors,
-          });
+          };
+          Object.keys(validationErrors).forEach(reKey => set(errors, reKey, validationErrors[reKey]));
+          throw new SubmissionError(errors);
         }
       }
     }
