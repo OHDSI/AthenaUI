@@ -55,11 +55,9 @@ function mapStateToProps(state): IStateProps {
   };
 }
 
-const mapDispatchToProps = function(dispatch): IDispatchProps {
-  return {
-    doRegister: (data) => dispatch(doRegister(data)),
-    goToWelcome: () => dispatch(goToPage(paths.welcome())),
-  }
+const mapDispatchToProps: IDispatchProps = {
+  doRegister,
+  goToWelcome: () => goToPage(paths.welcome()),
 };
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
