@@ -36,13 +36,15 @@ interface IStateProps {
 }
 
 interface IDispatchProps {
-  loadBuildInfo: Function,
   hideModal: Function,
+  loadBuildInfo: Function,
+  loadVocabularyVersion: Function,
 }
 
 class AboutInfo extends Component<IStateProps & IDispatchProps & { modal: Object }, {}> {
   componentWillMount() {
     this.props.loadBuildInfo();
+    this.props.loadVocabularyVersion();
   }
 
   render() {
@@ -60,8 +62,9 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  loadBuildInfo: actions.buildInfo.load,
   hideModal: () => ModalUtils.actions.toggle(modal.portalAboutInfo, false),
+  loadBuildInfo: actions.buildInfo.load,
+  loadVocabularyVersion: actions.vocabularyVersion.load,
 };
 
 const ModalAboutInfo = ModalUtils.connect({

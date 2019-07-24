@@ -47,12 +47,14 @@ class ControlPanel extends Component<IPanelProps, void> {
 
 function mapStateToProps(state: Object): IPanelStateProps {
   const vocs = get(state, `form.${forms.download}.values.vocabulary`, []);
+  const vocabularyReleaseVersion = get<string>(state, 'portal.vocabularyReleaseVersion.queryResult.vocabularyVersion');
 
   return {
     vocabulariesSelected: vocs.filter(v => v === true).length !== 0,
     initialValues: {
       selection: 'all',
-    }
+    },
+    vocabularyReleaseVersion,
   };
 }
 
