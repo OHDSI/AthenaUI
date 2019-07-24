@@ -38,11 +38,10 @@ interface IReduxFieldProps {
 };
 
 interface IPanelStateProps {
-    initialValues: {
-        selection: string;
-    },
-    vocabulariesSelected: boolean,
-    vocabularyReleaseVersion: string,
+  vocabulariesSelected: boolean,
+  initialValues: {
+    selection: string;
+  }
 };
 
 interface IPanelDispatchProps {
@@ -76,13 +75,11 @@ function ControlPanel(props: IPanelProps & FormProps<{}, {}, {}>) {
   const {
     download,
     vocabulariesSelected,
-      vocabularyReleaseVersion,
   } = props;
   const classes = BEMHelper('vocabulary-control-panel');
 
   return (
     <div {...classes()}>
-       <span>Vocabularies version: {vocabularyReleaseVersion}</span>
       <Field
         component={selection}
         options={{...classes('selection')}}

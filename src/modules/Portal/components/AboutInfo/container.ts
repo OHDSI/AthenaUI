@@ -33,18 +33,19 @@ interface IStateProps {
   buildNumber: string,
   isLoading: boolean,
   projectVersion: string,
+  vocabularyReleaseVersion: string,
 }
 
 interface IDispatchProps {
   hideModal: Function,
   loadBuildInfo: Function,
-  loadVocabularyVersion: Function,
+  loadVocabularyReleaseVersion: Function,
 }
 
 class AboutInfo extends Component<IStateProps & IDispatchProps & { modal: Object }, {}> {
   componentWillMount() {
     this.props.loadBuildInfo();
-    this.props.loadVocabularyVersion();
+    this.props.loadVocabularyReleaseVersion();
   }
 
   render() {
@@ -58,13 +59,14 @@ function mapStateToProps(state) {
     buildId: get(state, 'portal.buildInfo.queryResult.buildId'),
     isLoading: get(state, 'portal.buildInfo.isLoading'),
     projectVersion: get(state, 'portal.buildInfo.queryResult.projectVersion'),
+    vocabularyReleaseVersion: get<string>(state, 'portal.vocabularyReleaseVersion.queryResult.vocabularyVersion'),
   };
 }
 
 const mapDispatchToProps = {
   hideModal: () => ModalUtils.actions.toggle(modal.portalAboutInfo, false),
   loadBuildInfo: actions.buildInfo.load,
-  loadVocabularyVersion: actions.vocabularyVersion.load,
+  loadVocabularyReleaseVersion: actions.vocabularyVersion.load,
 };
 
 const ModalAboutInfo = ModalUtils.connect({
