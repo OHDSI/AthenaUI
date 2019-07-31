@@ -66,7 +66,7 @@ function AboutInfo(props: IAboutInfo) {
           </p>
         }
         <p {...classes('line', ['additional', 'padded'])}>
-          Vocabularies version: {vocabularyReleaseVersion}
+          OMOP Vocabulary version: {vocabularyReleaseVersion}
         </p>
         <p {...classes('line', 'padded')}>
           <Link href={'mailto:support@odysseusinc.com'}>support@odysseusinc.com</Link>
