@@ -20,11 +20,11 @@
  *
  */
 
-import {ohdsiApi} from 'services/Api';
+import { ohdsiApi } from 'services/Api';
 import services from '../apiServices';
 
-import {actionTypes, apiPaths} from 'modules/Vocabulary/const';
-import {IAppAction} from 'actions';
+import { actionTypes, apiPaths } from 'modules/Vocabulary/const';
+import { IAppAction } from 'actions';
 
 type DownloadParams = {
 	cdmVersion: string;
