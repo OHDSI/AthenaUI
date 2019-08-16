@@ -22,8 +22,7 @@ export default function EmailListInput({ fields }) {
                             name={field}
                             placeholder="Email"
                             component={FormInput}
-                            type="Email"
-                            label="Label"
+                            type="email"
                         />
                     </ListItem>
                 ))}
