@@ -135,16 +135,18 @@ function BundleTitle({ bundle, removeBundle, toggle, isExpanded, restore, downlo
           </Button>
           )}
 
-          <Button
-            {...classes('remove-button')}
-            onClick={() => removeBundle(bundle.id)}
-          >
-            Archive
-        </Button>
+          {isShareable && (
+            <Button
+              {...classes('remove-button')}
+              onClick={() => removeBundle(bundle.id)}
+            >
+              Archive
+            </Button>
+          )}
       </div>
      : <div>
          <span {...classes('status')}>{bundle.status}</span>
-         {bundle.status === bundleStatuses.ARCHIVED &&
+         {bundle.status === bundleStatuses.ARCHIVED && isShareable &&
            <Button
              {...classes('restore-button')}
              mods={['success', 'rounded']}
