@@ -23,7 +23,7 @@ class ModalShare extends Component<IModalProps, {}> {
 
 function mapStateToProps(state: any): IModalStateProps {
     const bundle = get(state, `modal.${modal.share}.data.bundle`, {});
-    const emailList = get(state, `modal.${modal.share}.data.bundle.downloadShareDTO.email`, '');
+    const emailList = get(state, `modal.${modal.share}.data.bundle.shareEmails`, '');
     const emails = emailList.split(', ');
   return {
     isOpened: get(state, `modal.${modal.share}.isOpened`, false),
