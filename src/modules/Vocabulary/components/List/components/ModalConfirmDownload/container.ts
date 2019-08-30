@@ -105,7 +105,7 @@ function mergeProps(
         );
       }
 
-      downloadVocabsAction
+      const promise = Promise.resolve(downloadVocabsAction)
           .then(() => dispatchProps.close())
           .then(() => dispatchProps.showResult())
           .then(() => dispatchProps.loadList())
@@ -115,7 +115,7 @@ function mergeProps(
             });
           });
 
-      return downloadVocabsAction;
+      return promise;
     },
   };
 }
