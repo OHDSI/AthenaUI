@@ -76,6 +76,7 @@
 
   &search-tooltip-dropdown {
     height: 2.6rem;
+    margin-right: 1.5rem;
     @include dropdown-content();
 
     &__content {
