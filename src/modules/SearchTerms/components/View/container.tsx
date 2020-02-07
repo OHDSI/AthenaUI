@@ -20,23 +20,17 @@
  *
  */
 
-import { connect } from 'react-redux';
-import { Component } from 'react';
+import {connect} from 'react-redux';
+import {Component} from 'react';
 import actions from 'modules/SearchTerms/actions';
-import { goBack, push } from 'react-router-redux';
-import { get, has } from 'lodash';
-import { paths } from 'modules/SearchTerms/const';
-import { paths as vocabularyPaths } from 'modules/Vocabulary/const';
-import {
-  ITermProps,
-  ITermStateProps,
-  ITermDispatchProps,
-} from './presenter';
-import { getTermFilters } from 'modules/SearchTerms/selectors';
+import {goBack, push} from 'react-router-redux';
+import {get, isEqual} from 'lodash';
+import {paths} from 'modules/SearchTerms/const';
+import {paths as vocabularyPaths} from 'modules/Vocabulary/const';
+import presenter, {ITermDispatchProps, ITermProps, ITermStateProps,} from './presenter';
+import {getTermFilters} from 'modules/SearchTerms/selectors';
 import * as URI from 'urijs';
-import { isEqual } from 'lodash';
-import presenter from './presenter';
-import  hasAnyConnections  from './selectors';
+import hasAnyConnections from './selectors';
 
 interface ITermRoute {
   routeParams: {
@@ -118,7 +112,7 @@ function mapStateToProps(state: Object, ownProps: ITermRoute): ITermStateProps {
   const details = get(state, 'searchTerms.terms.data', {});
   const isStandard = get(details, 'standardConcept') === 'Standard';
   const hasConnections = !!hasAnyConnections(state);
-  const isTableMode = ownProps.routeParams.displayMode !== 'graph' ;//|| !connectionsCount;
+  const isTableMode = ownProps.routeParams.displayMode !== 'graph' || !hasConnections;
   const termFilters = getTermFilters(state);
   const termConnections = isTableMode ? get(state, 'searchTerms.relationships.data.count', 0) : get(state, 'searchTerms.relations.data.connectionsCount', 0)
 
