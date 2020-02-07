@@ -36,6 +36,7 @@ import { getTermFilters } from 'modules/SearchTerms/selectors';
 import * as URI from 'urijs';
 import { isEqual } from 'lodash';
 import presenter from './presenter';
+import  hasAnyConnections  from './selectors';
 
 interface ITermRoute {
   routeParams: {
@@ -55,30 +56,33 @@ class Term extends Component<ITermProps, { isFullscreen: boolean }> {
 
   componentWillMount() {
     this.props.fetch(this.props.termId);
-    this.props.fetchConceptAncestors(
-      this.props.termId,
-      this.props.termFilters.levels,
-      this.props.termFilters.zoomLevel
-    );
+    this.props.fetchConceptAnyRelations(this.props.termId);
+    if (!this.props.isTableMode) {
+      this.props.fetchConceptAncestors(
+          this.props.termId,
+          this.props.termFilters.levels,
+          this.props.termFilters.zoomLevel
+      );
+    }
     this.props.fetchRelationships(this.props.termId, this.props.termFilters.standardsOnly);
+
   }
 
   componentWillReceiveProps(props: ITermProps) {
     if (this.props.termId !== props.termId) {
       this.props.fetch(props.termId);
       this.props.fetchRelationships(props.termId, this.props.termFilters.standardsOnly);
-      this.props.fetchConceptAncestors(
-        props.termId,
-        this.props.termFilters.levels,
-        this.props.termFilters.zoomLevels
-        );
+      this.props.fetchConceptAnyRelations(this.props.termId);
+      if (!props.isTableMode) {
+      }
+
     } else if (
-      !isEqual(this.props.termFilters.levels, props.termFilters.levels)
-      || !isEqual(this.props.termFilters.zoomLevel, props.termFilters.zoomLevel)) {
+        !isEqual(this.props.termFilters.levels, props.termFilters.levels)
+        || !isEqual(this.props.termFilters.zoomLevel, props.termFilters.zoomLevel)) {
       this.props.fetchConceptAncestors(
-        props.termId,
-        props.termFilters.levels,
-        props.termFilters.zoomLevel
+          props.termId,
+          props.termFilters.levels,
+          props.termFilters.zoomLevel
       );
     }
   }
@@ -113,10 +117,11 @@ function mapStateToProps(state: Object, ownProps: ITermRoute): ITermStateProps {
   const name = get(state, 'searchTerms.terms.data.name', 'Term');
   const details = get(state, 'searchTerms.terms.data', {});
   const isStandard = get(details, 'standardConcept') === 'Standard';
-  const relationshipsCount = get(state, 'searchTerms.relationships.data.count', 0);
-  const connectionsCount = get(state, 'searchTerms.relations.data.connectionsCount', 0);
-  const isTableMode = ownProps.routeParams.displayMode !== 'graph' || !connectionsCount;
+  const hasConnections = !!hasAnyConnections(state);
+  const isTableMode = ownProps.routeParams.displayMode !== 'graph' ;//|| !connectionsCount;
   const termFilters = getTermFilters(state);
+  const termConnections = isTableMode ? get(state, 'searchTerms.relationships.data.count', 0) : get(state, 'searchTerms.relations.data.connectionsCount', 0)
+
 
   return {
     details,
@@ -126,8 +131,8 @@ function mapStateToProps(state: Object, ownProps: ITermRoute): ITermStateProps {
     isTableMode,
     isStandard,
     termFilters,
-    connectionsCount,
-    relationshipsCount: isTableMode ? relationshipsCount : connectionsCount,
+    termConnections,
+    hasConnections,
   };
 }
 
@@ -136,6 +141,7 @@ const mapDispatchToProps = {
   fetchConceptAncestors: actions.termList.fetchConceptAncestors,
   goBack,
   fetchRelationships: actions.termList.fetchRelationships,
+  fetchConceptAnyRelations: actions.termList.fetchConceptAnyRelations,
   redirect: address => push(address),
 };
 
