@@ -67,9 +67,6 @@ class Term extends Component<ITermProps, { isFullscreen: boolean }> {
       this.props.fetch(props.termId);
       this.props.fetchRelationships(props.termId, this.props.termFilters.standardsOnly);
       this.props.fetchConceptAnyRelations(this.props.termId);
-      if (!props.isTableMode) {
-      }
-
     } else if (
         !isEqual(this.props.termFilters.levels, props.termFilters.levels)
         || !isEqual(this.props.termFilters.zoomLevel, props.termFilters.zoomLevel)) {
