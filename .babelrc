@@ -1,4 +1,4 @@
 {
-  "presets": ["latest", "stage-2", "react"],
+  "presets": ["env","react-app"],
 	"sourceMaps": true
 }
