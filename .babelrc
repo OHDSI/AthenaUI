@@ -1,4 +1,7 @@
 {
-  "presets": ["env","react-app"],
-	"sourceMaps": true
+  "presets": [
+    "env",
+    "react-app"
+  ],
+  "sourceMaps": true
 }

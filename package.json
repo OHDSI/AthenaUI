@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "webpack -p --progress --colors --env.mode production",
-    "start": "webpack-dev-server --hot --inline --env.mode development",
+    "start": "webpack-dev-server --env.mode development",
     "postinstall": "node helpers/typingsControl"
   },
   "author": "Odysseus Team",

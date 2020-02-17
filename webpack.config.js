@@ -72,7 +72,7 @@ module.exports = function(env) {
       ]
     },
     devServer: {
-      contentBase: outPath,
+      contentBase: sourcePath,
       historyApiFallback: true,
       hot: true,
       port: 3000,
