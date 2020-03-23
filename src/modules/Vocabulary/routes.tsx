@@ -44,6 +44,11 @@ function rootRoute(path: string): PlainRoute {
         component: require('./components/DownloadHistory').default,
         onEnter: Auth.requireOnPathEnter,
       },
+      {
+        path: 'download-bundle/:uuid',
+        component: require('./components/DownloadBundle').default,
+        onEnter: Auth.requireOnPathEnter,
+      },
     ],
   };
 }

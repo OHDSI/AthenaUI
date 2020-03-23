@@ -52,6 +52,7 @@ const paths = {
 
 const apiPaths = {
   availability: id => `/vocabularies/check/${id}`,
+  availabilityByUuid: uuid => `/vocabularies/checkbundle/${uuid}`,
   share: id => `/vocabularies/downloads/${id}/share`,
 };
 

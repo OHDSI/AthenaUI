@@ -51,6 +51,12 @@ function checkBundleAvailability(id: string) {
   };
 }
 
+function checkBundleAvailabilityByUuid(uuid: string) {
+  return (dispatch: Function) => {
+    return ohdsiApi.doGet(apiPaths.availabilityByUuid(uuid));
+  };
+}
+
 function requestDownload(downloadParams: DownloadParams) {
 	return services.download.find({ query: downloadParams });
 }
@@ -75,5 +81,7 @@ export default {
   requestNotifications,
   getNotifications,
   checkBundleAvailability,
+  checkBundleAvailabilityByUuid,
+
 };
 export { DownloadParams };
