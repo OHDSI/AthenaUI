@@ -139,7 +139,7 @@ function SearchOverviewPresenter(props: ISearchOverviewProps) {
             imageUrl: imgs.search.observations
         },
         {
-            title: 'Measures',
+            title: 'Measurements',
             domainName: 'Measurement',
             count: props.measurementCount,
             imageUrl: imgs.search.measurements
@@ -150,7 +150,7 @@ function SearchOverviewPresenter(props: ISearchOverviewProps) {
         <div {...classes()}>
             <div {...classes({element: 'content-wrapper'})}>
                 <div {...classes({element: 'title'})}>
-                    OHDSI Vocabularies Repository
+                    Search
                 </div>
                 <div {...classes('search-string')}>
                     <Form
