@@ -54,7 +54,7 @@
     "redux-promise-middleware": "4.2.0",
     "redux-thunk": "2.2.0",
     "reselect": "2.5.4",
-    "shelljs": "^0.7.8",
+    "shelljs": "^0.8.5",
     "superagent": "3.7.0",
     "urijs": "^1.19.6"
   },
