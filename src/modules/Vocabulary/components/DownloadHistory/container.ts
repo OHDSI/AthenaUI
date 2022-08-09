@@ -26,7 +26,7 @@ import actions from 'modules/Vocabulary/actions';
 import { get } from 'lodash';
 import { modal } from 'modules/Vocabulary/const';
 import { ModalUtils } from 'arachne-ui-components';
-import presenter, { IDownloadRequest } from './presenter';
+import presenter, { IDownloadRequest, IVocabulary } from './presenter';
 import selectors from './selectors';
 
 import {
@@ -105,6 +105,7 @@ const mapDispatchToProps = {
   checkAvailability: actions.download.checkBundleAvailability,
   showRequestModal: (ids = [], message) => ModalUtils.actions.toggle(modal.licenses, true, { licenses: ids, message }),
   showShareModal: (bundle) => ModalUtils.actions.toggle(modal.share, true, { bundle }),
+  openRequestModal: (vocab: IVocabulary) => ModalUtils.actions.toggle(modal.requestLicense, true, vocab),
 };
 
 function mergeProps(

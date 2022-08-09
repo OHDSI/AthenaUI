@@ -33,6 +33,7 @@ import { push } from 'react-router-redux';
 import { Field, FormProps } from 'redux-form';
 import { licenseStatuses } from 'const/vocabulary';
 import { Vocabulary } from './selectors';
+// import { VOCABULARY } from './const';
 
 require('./style.scss');
 
@@ -131,6 +132,7 @@ function Results(props: IResultsProps & FormProps<{}, {}, {}>) {
     toggle,
     openRequestModal,
   } = props;
+  // let vocabularies: any = VOCABULARY
   const classes = BEMHelper('vocabularies');
   const selectAllButton = <Checkbox onChange={toggleAllCheckboxes} isChecked={areAllRowsChecked} />;
   // add modifiers for Table component
@@ -224,6 +226,19 @@ function Results(props: IResultsProps & FormProps<{}, {}, {}>) {
             openRequestModal: () => openRequestModal(vocab),
             isCheckable: vocab.isCheckable,
             notAvailable: vocab.required === 'Currently not available',
+          })}
+        />
+        <Cell
+          {...classes('expiredDate')}
+          header='Expired date'
+          field='expiredDate'
+          props={(vocab: Vocabulary) => ({              
+            className: classes({
+              element: 'cell',
+              modifiers: {
+                selected: vocab.isChecked,
+              },
+            }).className,
           })}
         />
         <Cell

@@ -30,11 +30,14 @@ import { get, difference } from 'lodash';
 import presenter from './presenter';
 import selectors from './selectors';
 import { VocabularyOption, User, Vocabulary } from 'modules/Admin/components/Licenses/types';
+import * as moment from 'moment';
+import { commonDateFormat } from 'const/formats';
 
 interface IModalStateProps {
   vocabularies: Array<VocabularyOption>;
   initialValues: {
     vocabularies: Array<string>;
+    expiredDates: Array<string>;
   };
   user: User;
   pendingVocabularies: Array<Vocabulary>;
@@ -43,7 +46,7 @@ interface IModalDispatchProps {
   close: () => (dispatch: Function) => any;
   remove: (id: string) => (dispatch: Function) => any;
   loadLicenses: () => (dispatch: Function) => any;
-  resolveLicense: (id: number, allow: boolean) => (dispatch: Function) => any;
+  resolveLicense: (id: number, allow: boolean, expiredDate: any) => (dispatch: Function) => any;
 };
 interface IModalProps extends IModalStateProps, IModalDispatchProps {
   doSubmit: (vocabs: Array<VocabularyOption>) => Promise<any>;
@@ -58,6 +61,12 @@ class ModalEditPermissions extends Component<IModalProps, {}> {
 function mapStateToProps(state: any): IModalStateProps {
   const vocabularies = selectors.getVocabularies(state);
   const pendingVocabularies = selectors.getPendingVocabularies(state);
+  const expiredDates = []
+  pendingVocabularies.forEach((vocab) => {
+    expiredDates[vocab.licenseId] = vocab.expiredDate ? moment(vocab.expiredDate).format() : moment(new Date().setFullYear(new Date().getFullYear() + 2)).format()
+  })
+
+
   const user = get(state, 'modal.editPermission.data.user.name', {
     id: -1,
     name: 'Anonymous',
@@ -68,6 +77,7 @@ function mapStateToProps(state: any): IModalStateProps {
     vocabularies,
     initialValues: {
       vocabularies: vocabularies.map(v => v.value.toString()),
+      expiredDates: expiredDates
     },
     user,
     pendingVocabularies,
@@ -90,13 +100,13 @@ function mergeProps(
     ...stateProps,
     ...ownProps,
     ...dispatchProps,
-    doSubmit: ({ vocabularies = [], pendingVocabs = [] }) => {
+    doSubmit: ({ vocabularies = [], pendingVocabs = [], expiredDates = [] }) => {
       const promises = [];
       difference(stateProps.initialValues.vocabularies, vocabularies).forEach((licenseId) => {
         promises.push(dispatchProps.remove(licenseId));
       });
       pendingVocabs.forEach((isAllowed: boolean, licenseId: number) => {
-        promises.push(dispatchProps.resolveLicense(licenseId, isAllowed));
+        promises.push(dispatchProps.resolveLicense(licenseId, isAllowed, expiredDates[licenseId]));
       });
       const promise = Promise.all(promises);
       promise

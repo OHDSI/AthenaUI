@@ -38,13 +38,23 @@
     }
 
     &__pending-voc-name {
-    	flex-grow: 1;
+    	//flex-grow: 1;
+
+		display: block;
+		width: 200px;
     	padding-right: 0.5rem; 
     }
 
     &__pending-button {
     	@include title();
     	width: 6rem;
+    }
+
+	&__pending-date-picker {
+    	@include title();
+    	//width: 6rem;
+		margin-right: 20px;
+		width: 200px;
     }
 
     &__submit-button-wrapper {

@@ -20,17 +20,18 @@
  *
  */
 
-import API from 'services/Api';
-import services from '../apiServices';
+import API from "services/Api";
+import services from "../apiServices";
 
 function load() {
   return services.vocabularies.find();
 }
 
-function requestLicense(vocabularyId) {
-	return services.vocabLicenses.create({
-		vocabularyId,
-	});
+function requestLicense(vocabularyId, expiredDate) {
+  return services.vocabLicenses.create({
+    vocabularyId,
+    expiredDate,
+  });
 }
 
 export default {

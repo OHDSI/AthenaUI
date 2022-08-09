@@ -20,34 +20,34 @@
  *
  */
 
-import { Component } from 'react';
-import { connect } from 'react-redux';
-import actions from 'modules/Vocabulary/actions';
-import { ModalUtils } from 'arachne-ui-components';
-import { modal } from 'modules/Vocabulary/const';
-import { licenseStatuses } from 'const/vocabulary';
-import { get } from 'lodash';
-import presenter from './presenter';
-import {
-  Vocabulary,
-} from '../Results/selectors';
+import { Component } from "react";
+import { connect } from "react-redux";
+import actions from "modules/Vocabulary/actions";
+import { ModalUtils } from "arachne-ui-components";
+import { forms, modal } from "modules/Vocabulary/const";
+import { licenseStatuses } from "const/vocabulary";
+import { get } from "lodash";
+import presenter, { IModalDispatchProps, IModalProps, IModalStateProps } from "./presenter";
+import { Vocabulary } from "../Results/selectors";
+import { reduxForm } from "redux-form";
+import * as moment from "moment";
 
-interface IModalStateProps {
-  vocab: Vocabulary;
-  isLoading: boolean;
-};
+// interface IModalStateProps {
+//   vocab: Vocabulary;
+//   isLoading: boolean;
+// }
 
-interface IModalDispatchProps {
-  close: () => null;
-  requestLicense: (id: number) => Promise<any>;
-  openConfirmModal: Function;
-  loadList: Function;
-};
+// interface IModalDispatchProps {
+//   close: () => null;
+//   requestLicense: (id: number, expiredDate: any) => Promise<any>;
+//   openConfirmModal: Function;
+//   loadList: Function;
+// }
 
-interface IModalProps extends IModalStateProps, IModalDispatchProps {
-  modal: string;
-  request: Function;
-};
+// interface IModalProps extends IModalStateProps, IModalDispatchProps {
+//   modal: string;
+//   request: Function;
+// }
 
 class ModalRequestLicense extends Component<IModalProps, {}> {
   render() {
@@ -55,25 +55,33 @@ class ModalRequestLicense extends Component<IModalProps, {}> {
   }
 }
 
+const getStatisticValue = (state) =>
+  get(state, "form.requestLinsence.values", {
+    expiredDate: moment(),
+  });
+
 function mapStateToProps(state: any): IModalStateProps {
-  const vocab: Vocabulary = get(state, 'modal.requestLicense.data', {
+  const vocab: Vocabulary = get(state, "modal.requestLicense.data", {
     id: -1,
-    code: '',
-    name: 'Unnamed vocabulary',
+    code: "",
+    name: "Unnamed vocabulary",
     available: true,
-    update: '',
+    update: "",
     index: 0,
     isCheckable: false,
     isChecked: false,
-    tableRowClass: '',
+    tableRowClass: "",
     status: licenseStatuses.APPROVED,
     clickDefault: false,
+    expiredDate: "",
   });
-  const isLoading = get(state, 'vocabulary.vocabLicenses.isSaving', false);
+  const isLoading = get(state, "vocabulary.vocabLicenses.isSaving", false);
+  const expiredDate = getStatisticValue(state).expiredDate;
 
-	return {
+  return {
     vocab,
     isLoading,
+    expiredDate,
   };
 }
 
@@ -82,32 +90,40 @@ const mapDispatchToProps = {
   requestLicense: actions.vocabularies.requestLicense,
   openConfirmModal: () => ModalUtils.actions.toggle(modal.confirmLicense, true),
   loadList: actions.vocabularies.load,
+  loadHistory: actions.history.load,
 };
 
-function mergeProps(
-  stateProps: IModalStateProps,
-  dispatchProps: IModalDispatchProps,
-  ownProps
-  ): IModalProps {
+function mergeProps(stateProps: IModalStateProps, dispatchProps: IModalDispatchProps, ownProps): IModalProps {
   return {
     ...stateProps,
     ...ownProps,
     ...dispatchProps,
-    request: () => {
-      return dispatchProps.requestLicense(stateProps.vocab.id)
+    request: (expiredDate, isHistoryScreen) => {
+      return dispatchProps
+        .requestLicense(stateProps.vocab.id, expiredDate)
         .then(() => dispatchProps.close())
         .then(() => dispatchProps.openConfirmModal())
-        .then(() => dispatchProps.loadList())
+        .then(() => {
+          if (isHistoryScreen) {
+            dispatchProps.loadHistory();
+          } else {
+            dispatchProps.loadList();
+          }
+        })
         .catch(() => {});
     },
   };
 }
 
-const ReduxModalWindow = ModalUtils.connect({ name: modal.requestLicense })(ModalRequestLicense);
+const ModalRequestLicenseForm = reduxForm({
+  form: forms.requestLinsence,
+  onSubmit: () => {
+    console.log("onSubmit");
+  },
+  initialValues: {
+    expiredDate: moment(),
+  },
+})<any>(ModalRequestLicense);
+const ReduxModalWindow = ModalUtils.connect({ name: modal.requestLicense })(ModalRequestLicenseForm);
 
-export default connect<IModalStateProps, IModalDispatchProps, {}>(
-	mapStateToProps,
-	mapDispatchToProps,
-	mergeProps
-)
-(ReduxModalWindow);
+export default connect<IModalStateProps, IModalDispatchProps, {}>(mapStateToProps, mapDispatchToProps, mergeProps)(ReduxModalWindow);

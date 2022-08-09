@@ -17,27 +17,28 @@
  * Product Owner/Architecture: Gregory Klebanov
  * Authors: Alexandr Saltykov, Pavel Grafkin, Vitaly Koulakov, Anton Gackovka
  * Created: March 3, 2017
- *  
+ *
  */
 
-import { createSelector } from 'reselect';
-import { get } from 'lodash';
-import * as moment from 'moment';
-import BEMHelper from 'services/BemHelper';
-import { IDownloadRequest, IVocabulary, IHistoryItem } from './presenter';
+import { createSelector } from "reselect";
+import { get } from "lodash";
+import * as moment from "moment";
+import BEMHelper from "services/BemHelper";
+import { IDownloadRequest, IVocabulary, IHistoryItem } from "./presenter";
+import { commonDateFormat } from "const/formats";
 
-const getRawHistory = (state: Object) => get(state, 'vocabulary.history.queryResult') || [];
+const getRawHistory = (state: Object) => get(state, "vocabulary.history.queryResult") || [];
 
-const getHistory = createSelector(
-    getRawHistory,
-    (rawResults: Array<IDownloadRequest>) => rawResults.map((bundle: IDownloadRequest) => ({
-      ...bundle,
-      vocabularies: bundle.vocabularies.map((voc: IVocabulary) => ({
-        ...voc,
-        cdmVersion: `CDM ${bundle.cdmVersion}`,
-      }))
+const getHistory = createSelector(getRawHistory, (rawResults: Array<IDownloadRequest>) =>
+  rawResults.map((bundle: IDownloadRequest) => ({
+    ...bundle,
+    vocabularies: bundle.vocabularies.map((voc: IVocabulary) => ({
+      ...voc,
+      cdmVersion: `CDM ${bundle.cdmVersion}`,
+      expiredDate: voc.expiredDate ? moment(voc.expiredDate).format(commonDateFormat) : "",
     })),
-  );
+  }))
+);
 
 export default {
   getHistory,

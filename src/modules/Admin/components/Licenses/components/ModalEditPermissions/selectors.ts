@@ -23,6 +23,8 @@
 import { createSelector } from 'reselect';
 import { get } from 'lodash';
 import { licenseStatuses } from 'const/vocabulary';
+import moment from 'moment';
+import { commonDateFormat } from 'const/formats';
 
 const getRawVocs = (state: Object) => get(state, 'modal.editPermission.data.vocabularies', []) || [];
 
@@ -31,7 +33,7 @@ const getVocabularies = createSelector(
     (rawResults: Array<any>) => rawResults
       .filter(voc => voc.status === licenseStatuses.APPROVED)
       .map((voc) => ({
-        label: voc.code,
+        label: `${voc.code}${voc.expiredDate ? ' (Expired date: ' + moment(voc.expiredDate).format(commonDateFormat) + ')' : ''}`,
         value: voc.licenseId,
       })),
   );

@@ -20,45 +20,81 @@
  *
  */
 
-import * as React from 'react';
-import BEMHelper from 'services/BemHelper';
-import { Modal, Button, LoadingPanel } from 'arachne-ui-components';
-import {
-  Vocabulary,
-} from '../Results/selectors';
+import * as React from "react";
+import BEMHelper from "services/BemHelper";
+import { Modal, Button, LoadingPanel, FormDatepicker, Form } from "arachne-ui-components";
+import { Vocabulary } from "../Results/selectors";
+import { commonDateFormat } from "const/formats";
+import { Field } from "redux-form";
+import { paths } from "modules/Vocabulary/const";
 
-require('./style.scss');
+require("./style.scss");
 
-interface IModalProps {
-	modal: string;
-	request: Function;
-	vocab: Vocabulary;
-	isLoading: boolean;
-};
+interface IModalStateProps {
+  vocab: Vocabulary;
+  isLoading: boolean;
+  expiredDate: any;
+}
+
+interface IModalDispatchProps {
+  close: () => null;
+  requestLicense: (id: number, expiredDate: any) => Promise<any>;
+  openConfirmModal: Function;
+  loadList: Function;
+  loadHistory: Function;
+}
+
+interface IModalProps extends IModalStateProps, IModalDispatchProps {
+  modal: string;
+  request: Function;
+  vocab: Vocabulary;
+  isLoading: boolean;
+}
+
+interface IReduxFieldProps {
+  options: any;
+  input: any;
+}
 
 function ModalConfirmDownload(props: IModalProps) {
-  const {
-    modal,
-    request,
-    vocab,
-    isLoading,
-  } = props;
-  const classes = BEMHelper('request-license');
+  const { modal, request, vocab, isLoading, expiredDate } = props;
+  console.log("props", props);
+  const classes = BEMHelper("request-license");
+  console.log("request", request);
+  const fields = [
+    {
+      name: "expiredDate",
+      InputComponent: {
+        component: FormDatepicker,
+        props: {
+          className: "abc",
+          title: "Expired Date",
+          type: "text",
+          options: {
+            selected: expiredDate,
+            dateFormat: commonDateFormat,
+          },
+        },
+      },
+    },
+  ];
+  const isHistoryScreen = window.location.pathname === paths.history()
 
   return (
-    <Modal modal={modal} title='Request access'>
-    	<div {...classes()}>
-		    Vocabulary '{vocab.name}' requires a license <br />
-		    <Button
-			    {...classes('request-button')}
-			    onClick={request}
-			    mods={['submit', 'rounded']}
-		    >
-		    	Request
-		    </Button>
-	    </div>
-	    <LoadingPanel active={isLoading} />
-    </Modal>);
+    <Modal modal={modal} title="Request access">
+      <div {...classes()}>
+        Vocabulary '{vocab.name}' requires a license <br /> <br />
+        <div>
+          <Form {...props} fields={fields} />
+        </div>
+        <Button {...classes("request-button")} onClick={() => request(expiredDate, isHistoryScreen)} mods={["submit", "rounded"]}>
+          Request
+        </Button>
+      </div>
+      <LoadingPanel active={isLoading} />
+    </Modal>
+  );
 }
 
 export default ModalConfirmDownload;
+export { IModalProps, IModalStateProps, IModalDispatchProps };
