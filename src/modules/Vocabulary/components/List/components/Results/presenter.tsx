@@ -20,35 +20,29 @@
  *
  */
 
-import * as React from 'react';
-import BEMHelper from 'services/BemHelper';
-import {
-  Button,
-  Table,
-  TableCellText as Cell,
-  Checkbox,
-  Link,
-} from 'arachne-ui-components';
-import { push } from 'react-router-redux';
-import { Field, FormProps } from 'redux-form';
-import { licenseStatuses } from 'const/vocabulary';
-import { Vocabulary } from './selectors';
+import * as React from "react";
+import BEMHelper from "services/BemHelper";
+import { Table, TableCellText as Cell, Checkbox, Link } from "arachne-ui-components";
+import { Field, FormProps } from "redux-form";
+import { licenseStatuses } from "const/vocabulary";
+import { Vocabulary } from "./selectors";
+import { TYPE_MODAL } from "modules/Vocabulary/const";
 // import { VOCABULARY } from './const';
 
-require('./style.scss');
+require("./style.scss");
 
 interface IDownloadCheckboxProps {
   options: {
     className: string;
   };
   input: any;
-};
+}
 
 interface ICellProps {
   className: string;
   isCheckable: boolean;
   name: string;
-};
+}
 
 interface IResultsStateProps {
   areAllChecked: boolean | Object;
@@ -56,129 +50,148 @@ interface IResultsStateProps {
   sorting: string;
   vocabularies: Array<Vocabulary>;
   initialValues: Object;
-};
+}
 
 interface IResultsDispatchProps {
   toggleAll: (on: boolean) => (dispatch: Function) => any;
   toggle: (id: number, on: boolean) => (dispatch: Function) => any;
   openRequestModal: Function;
-};
+}
 
 interface IResultsProps extends IResultsStateProps, IResultsDispatchProps {
   toggleAllCheckboxes: () => (dispatch: Function) => any;
   setSorting: Function;
-};
+}
 
 interface IResultsOwnProps {
   predefinedVocabs: Array<string>;
-};
+}
 
 function DownloadCheckbox(props: IDownloadCheckboxProps) {
   const { options, /*redux-form*/ input } = props;
-  return (<Checkbox
-      className={options.className}
-      isChecked={input.value}
-    />);
+  return <Checkbox className={options.className} isChecked={input.value} />;
 }
 
 function CellChecked(props: any) {
   const { className, isCheckable, name } = props;
-  
-  return isCheckable
-    ? <Field component={DownloadCheckbox} options={{ className }} name={name} />
-    : null;
+  const classes = BEMHelper("cell-checked");
+
+  return isCheckable ? (
+    <Field component={DownloadCheckbox} options={{ className }} name={name} />
+  ) : (
+    <Link
+      {...classes({ extra: "ac-tooltip" })}
+      // style={{ height: "100%" }}
+      aria-label="License Expired"
+      data-tootik-conf="right"
+    >
+      <span {...classes({ element: "licenseExpired" })}>License Expired</span>
+    </Link>
+  );
 }
 
 function CellLicense(props: any) {
   const { className, value, openRequestModal, isPending, isCheckable, notAvailable } = props;
-  const classes = BEMHelper('cell-license');
+  const classes = BEMHelper("cell-license");
   if (!value) {
     return null;
   }
   if (isCheckable) {
     return <span>{value}</span>;
   } else if (isPending) {
-    return <Link {...classes()}>
-        <span {...classes({ element: 'icon', extra: `${className}--disabled` })}>
-          timer
-        </span> {value}
-      </Link>;
+    return (
+      <Link {...classes()}>
+        <span {...classes({ element: "icon", extra: `${className}--disabled` })}>timer</span> {value}
+      </Link>
+    );
   } else {
-    return <Link {...classes({ extra: notAvailable ? '' : 'ac-tooltip' })}
-          aria-label='Click to request access'
-          data-tootik-conf='right'
-          onClick={() => {
-            if (notAvailable) {
-              return false;
-            }
-            openRequestModal();
-          }}>
-          <span {...classes({ element: 'icon', extra: `${className}--disabled` })}>
-            vpn_key
-          </span>
+    return (
+      <Link
+        {...classes({ extra: notAvailable ? "" : "ac-tooltip" })}
+        aria-label="Click to request access"
+        data-tootik-conf="right"
+        onClick={() => {
+          if (notAvailable) {
+            return false;
+          }
+          openRequestModal();
+        }}
+      >
+        <span {...classes({ element: "icon", extra: `${className}--disabled` })}>vpn_key</span>
         {value}
-      </Link>;
+      </Link>
+    );
   }
+}
 
+function CellLicenseExpiredDate(props: any) {
+  const { className, value, openRequestModal } = props;
+  const classes = BEMHelper("cell-license");
+
+  return (
+    <Link
+      {...classes({ extra: !value ? "" : "ac-tooltip" })}
+      aria-label="Click to request access"
+      data-tootik-conf="right"
+      onClick={() => {
+        if (!value) return;
+        openRequestModal();
+      }}
+    >
+      {value}
+    </Link>
+  );
 }
 
 function Results(props: IResultsProps & FormProps<{}, {}, {}>) {
-  const {
-    areAllRowsChecked,
-    vocabularies,
-    sorting,
-    setSorting,
-    toggleAllCheckboxes,
-    toggle,
-    openRequestModal,
-  } = props;
+  const { areAllRowsChecked, vocabularies, sorting, setSorting, toggleAllCheckboxes, toggle, openRequestModal } = props;
   // let vocabularies: any = VOCABULARY
-  const classes = BEMHelper('vocabularies');
+  const classes = BEMHelper("vocabularies");
   const selectAllButton = <Checkbox onChange={toggleAllCheckboxes} isChecked={areAllRowsChecked} />;
   // add modifiers for Table component
   vocabularies.map((vocabulary) => {
     if (vocabulary.isChecked) {
-    vocabulary.tableRowClass = classes('selected-row').className;
+      vocabulary.tableRowClass = classes("selected-row").className;
     }
   });
+  console.log("vocabularies", vocabularies);
 
   return (
     <div {...classes()}>
       <Table
-        {...classes('table')}
+        {...classes("table")}
         data={vocabularies}
-        mods={['hover', 'padded', 'selectable']}
+        mods={["hover", "padded", "selectable"]}
         sorting={sorting}
         setSorting={setSorting}
         onRowClick={(vocab: Vocabulary) => {
-            if(vocab.isCheckable) {
-              toggle(vocab.id, !vocab.isChecked);
-            }
+          if (vocab.isCheckable) {
+            toggle(vocab.id, !vocab.isChecked);
           }
-        }
+        }}
       >
         <CellChecked
-          {...classes('selection')}
+          {...classes("selection")}
           header={selectAllButton}
-          field='isChecked'
+          field="isChecked"
           props={(vocab: Vocabulary) => ({
             isCheckable: vocab.isCheckable,
             name: `vocabulary[${vocab.id}]`,
             className: classes({
-              element: 'cell',
+              element: "cell",
               modifiers: {
                 unclickable: vocab.isCheckable,
               },
             }).className,
           })}
-         />
+        />
         <Cell
-          {...classes('id')}
-          header='ID (CDM v4.5)'
-          field='id'
-          props={(vocab: Vocabulary) => ({              
+          {...classes("id")}
+          header="ID (CDM v4.5)"
+          field="id"
+          props={(vocab: Vocabulary) => ({
             className: classes({
-              element: 'cell',
+              element: "cell",
               modifiers: {
                 selected: vocab.isChecked,
               },
@@ -186,12 +199,12 @@ function Results(props: IResultsProps & FormProps<{}, {}, {}>) {
           })}
         />
         <Cell
-          {...classes('code')}
-          header='CODE (CDM v5)'
-          field='code'
-          props={(vocab: Vocabulary) => ({              
+          {...classes("code")}
+          header="CODE (CDM v5)"
+          field="code"
+          props={(vocab: Vocabulary) => ({
             className: classes({
-              element: 'cell',
+              element: "cell",
               modifiers: {
                 selected: vocab.isChecked,
               },
@@ -199,12 +212,12 @@ function Results(props: IResultsProps & FormProps<{}, {}, {}>) {
           })}
         />
         <Cell
-          {...classes('name')}
-          header='Name'
-          field='name'
-          props={(vocab: Vocabulary) => ({              
+          {...classes("name")}
+          header="Name"
+          field="name"
+          props={(vocab: Vocabulary) => ({
             className: classes({
-              element: 'cell',
+              element: "cell",
               modifiers: {
                 selected: vocab.isChecked,
               },
@@ -212,42 +225,44 @@ function Results(props: IResultsProps & FormProps<{}, {}, {}>) {
           })}
         />
         <CellLicense
-          {...classes('required')}
-          header='Required'
-          field='required'
-          props={(vocab: Vocabulary) => ({              
+          {...classes("required")}
+          header="Required"
+          field="required"
+          props={(vocab: Vocabulary) => ({
             className: classes({
-              element: 'cell',
+              element: "cell",
               modifiers: {
                 selected: vocab.isChecked,
               },
             }).className,
             isPending: vocab.status === licenseStatuses.PENDING,
-            openRequestModal: () => openRequestModal(vocab),
+            openRequestModal: () => openRequestModal(vocab, TYPE_MODAL.REQUEST_LICENSE),
             isCheckable: vocab.isCheckable,
-            notAvailable: vocab.required === 'Currently not available',
+            notAvailable: vocab.required === "Currently not available",
           })}
         />
-        <Cell
-          {...classes('expiredDate')}
-          header='Expired date'
-          field='expiredDate'
-          props={(vocab: Vocabulary) => ({              
+
+        <CellLicenseExpiredDate
+          {...classes("expiredDate")}
+          header="License Expiration Date"
+          field="expiredDate"
+          props={(vocab: Vocabulary) => ({
             className: classes({
-              element: 'cell',
+              element: "cell",
               modifiers: {
                 selected: vocab.isChecked,
               },
             }).className,
+            openRequestModal: () => openRequestModal(vocab, TYPE_MODAL.UPDATE_LICENSE),
           })}
         />
         <Cell
-          {...classes('update')}
-          header='Latest Update'
-          field='update'
-          props={(vocab: Vocabulary) => ({              
+          {...classes("update")}
+          header="Latest Update"
+          field="update"
+          props={(vocab: Vocabulary) => ({
             className: classes({
-              element: 'cell',
+              element: "cell",
               modifiers: {
                 selected: vocab.isChecked,
               },
@@ -260,9 +275,4 @@ function Results(props: IResultsProps & FormProps<{}, {}, {}>) {
 }
 
 export default Results;
-export {
-  IResultsStateProps,
-  IResultsDispatchProps,
-  IResultsProps,
-  IResultsOwnProps,
-};
+export { IResultsStateProps, IResultsDispatchProps, IResultsProps, IResultsOwnProps };

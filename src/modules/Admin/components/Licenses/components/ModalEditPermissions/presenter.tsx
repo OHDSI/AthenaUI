@@ -22,23 +22,38 @@
 
 import * as React from "react";
 import BEMHelper from "services/BemHelper";
-import { Modal, FormCheckboxList, Form, TabbedPane, RadioButton, Button, Datepicker } from "arachne-ui-components";
+import { Modal, FormCheckboxList, TabbedPane, RadioButton, Button } from "arachne-ui-components";
 import { Vocabulary } from "modules/Admin/components/Licenses/types";
 import { Field } from "redux-form";
+import DatePanel from "components/DatePanel";
+import { commonDateFormat } from "const/formats";
 
 require("./style.scss");
 
 function VocRadioButton({ options, input }) {
   const classes = BEMHelper("pending-radio-btn");
 
-  return <RadioButton {...classes()} isChecked={input.value === options.value} onChange={() => input.onChange(options.value)} />;
+  return (
+    <RadioButton
+      {...classes()}
+      isChecked={input.value === options.value}
+      onChange={() => input.onChange(options.value)}
+    />
+  );
 }
 
 function DatepickerControler({ options, input }) {
   const classes = BEMHelper("date-picker");
-  console.log("input", input.value);
 
-  return <Datepicker {...classes()} selected={input.value} onChange={input.onChange} />;
+  return (
+    <DatePanel
+      {...classes()}
+      selected={input.value}
+      dateFormat={commonDateFormat}
+      isEditable={true}
+      onChange={input.onChange}
+    />
+  );
 }
 
 function ModalEditPermissions(props) {

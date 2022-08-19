@@ -22,11 +22,12 @@
 
 import * as React from "react";
 import BEMHelper from "services/BemHelper";
-import { Modal, Button, LoadingPanel, FormDatepicker, Form } from "arachne-ui-components";
+import { Modal, Button, LoadingPanel } from "arachne-ui-components";
 import { Vocabulary } from "../Results/selectors";
 import { commonDateFormat } from "const/formats";
 import { Field } from "redux-form";
-import { paths } from "modules/Vocabulary/const";
+import { paths, TYPE_MODAL } from "modules/Vocabulary/const";
+import DatePanel from "components/DatePanel";
 
 require("./style.scss");
 
@@ -34,6 +35,9 @@ interface IModalStateProps {
   vocab: Vocabulary;
   isLoading: boolean;
   expiredDate: any;
+  initialValues: {
+    expiredDate: string;
+  };
 }
 
 interface IModalDispatchProps {
@@ -51,44 +55,74 @@ interface IModalProps extends IModalStateProps, IModalDispatchProps {
   isLoading: boolean;
 }
 
-interface IReduxFieldProps {
-  options: any;
-  input: any;
+// interface IReduxFieldProps {
+//   options: any;
+//   input: any;
+// }
+
+function DatepickerControler({ options, input, titleDisplay }) {
+  const classes = BEMHelper("date-picker");
+
+  return (
+    <DatePanel
+      {...classes()}
+      title={titleDisplay}
+      selected={input.value}
+      dateFormat={commonDateFormat}
+      isEditable={true}
+      onChange={input.onChange}
+    />
+  );
 }
 
 function ModalConfirmDownload(props: IModalProps) {
   const { modal, request, vocab, isLoading, expiredDate } = props;
-  console.log("props", props);
   const classes = BEMHelper("request-license");
-  console.log("request", request);
-  const fields = [
-    {
-      name: "expiredDate",
-      InputComponent: {
-        component: FormDatepicker,
-        props: {
-          className: "abc",
-          title: "Expired Date",
-          type: "text",
-          options: {
-            selected: expiredDate,
-            dateFormat: commonDateFormat,
-          },
-        },
-      },
-    },
-  ];
-  const isHistoryScreen = window.location.pathname === paths.history()
+  const getContextModal = () => {
+    switch (vocab.typeModal) {
+      case TYPE_MODAL.UPDATE_LICENSE:
+        return {
+          modalTitle: "Extend License",
+          buttonLabel: "Request Extension",
+          titleDatePicker: "New expiration date",
+          modalMessage: "",
+        };
+      case TYPE_MODAL.REQUEST_LICENSE:
+      default:
+        return {
+          modalTitle: "Request access",
+          buttonLabel: "Request",
+          titleDatePicker: "License Expiration Date",
+          modalMessage: (
+            <div>
+              {`Vocabulary '${vocab.name}' requires a license`} <br />
+              <br />
+            </div>
+          ),
+        };
+    }
+  };
+  const { modalTitle, buttonLabel, titleDatePicker, modalMessage } = getContextModal();
+
+  const isHistoryScreen = window.location.pathname === paths.history();
 
   return (
-    <Modal modal={modal} title="Request access">
+    <Modal modal={modal} title={modalTitle}>
       <div {...classes()}>
-        Vocabulary '{vocab.name}' requires a license <br /> <br />
-        <div>
-          <Form {...props} fields={fields} />
+        {modalMessage}
+        {/* Vocabulary '{vocab.name}' requires a license <br /> <br /> */}
+        <div {...classes("request-date")}>
+          <Field
+            component={(props: any) => <DatepickerControler {...props} titleDisplay={titleDatePicker} />}
+            name="expiredDate"
+          />
         </div>
-        <Button {...classes("request-button")} onClick={() => request(expiredDate, isHistoryScreen)} mods={["submit", "rounded"]}>
-          Request
+        <Button
+          {...classes("request-button")}
+          onClick={() => request(expiredDate, isHistoryScreen)}
+          mods={["submit", "rounded"]}
+        >
+          {buttonLabel}
         </Button>
       </div>
       <LoadingPanel active={isLoading} />

@@ -20,56 +20,60 @@
  *
  */
 
-@import 'styles/vars-and-mixins.scss';
+@import "styles/vars-and-mixins.scss";
 
 .#{$namespace} {
   &edit-permissions {
-  	@include tabbed-modal();
+    @include tabbed-modal();
 
     &__tab-content {
-	    padding: 2rem;
-	    min-width: 500px;
-	    min-height: 200px;
-	  }
+      padding: 2rem;
+      min-width: 500px;
+      min-height: 200px;
+    }
 
     &__pending-voc {
-    	display: flex;
-    	padding: 0.5rem 0;
+      display: flex;
+      padding: 0.5rem 0;
     }
 
     &__pending-voc-name {
-    	//flex-grow: 1;
+      //flex-grow: 1;
 
-		display: block;
-		width: 200px;
-    	padding-right: 0.5rem; 
+      display: flex;
+      align-items: center;
+      width: 200px;
+      padding-right: 0.5rem;
     }
 
     &__pending-button {
-    	@include title();
-    	width: 6rem;
+      @include title();
+      width: 6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-	&__pending-date-picker {
-    	@include title();
-    	//width: 6rem;
-		margin-right: 20px;
-		width: 200px;
+    &__pending-date-picker {
+      @include title();
+      //width: 6rem;
+      margin-right: 20px;
+      width: 200px;
     }
 
     &__submit-button-wrapper {
-    	padding: 1rem 2rem;
+      padding: 1rem 2rem;
     }
     &__submit-button {
-    	width: 100%;
+      width: 100%;
     }
   }
 
   &pending-radio-btn {
-  	& .ac-radio-button {
-  		&__box {
-		  	margin: auto;
-		  }
-		}
+    & .ac-radio-button {
+      &__box {
+        margin: auto;
+      }
+    }
   }
 }

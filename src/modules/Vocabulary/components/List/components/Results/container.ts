@@ -20,27 +20,20 @@
  *
  */
 
-import { connect } from 'react-redux';
-import { Component } from 'react';
-import actions from 'modules/Vocabulary/actions';
-import { apiPaths, forms, modal } from 'modules/Vocabulary/const';
-import { get } from 'lodash';
-import { push as goToPage } from 'react-router-redux';
-import { reduxForm, reset, FormProps, change as reduxFormChange } from 'redux-form';
-import { ModalUtils } from 'arachne-ui-components';
-import { isEmpty } from 'lodash';
-import presenter from './presenter';
-import selectors from './selectors';
+import { connect } from "react-redux";
+import { Component } from "react";
+import actions from "modules/Vocabulary/actions";
+import { apiPaths, forms, modal, TYPE_MODAL } from "modules/Vocabulary/const";
+import { get } from "lodash";
+import { push as goToPage } from "react-router-redux";
+import { reduxForm, reset, FormProps, change as reduxFormChange } from "redux-form";
+import { ModalUtils } from "arachne-ui-components";
+import { isEmpty } from "lodash";
+import presenter from "./presenter";
+import selectors from "./selectors";
 
-import {
-  IResultsStateProps,
-  IResultsDispatchProps,
-  IResultsProps,
-  IResultsOwnProps,
-} from './presenter';
-import {
-  Vocabulary,
-} from './selectors';
+import { IResultsStateProps, IResultsDispatchProps, IResultsProps, IResultsOwnProps } from "./presenter";
+import { Vocabulary } from "./selectors";
 
 class Results extends Component<IResultsProps & FormProps<{}, {}, {}> & IResultsOwnProps, void> {
   render() {
@@ -54,7 +47,7 @@ function mapStateToProps(state: Object, ownProps: any): IResultsStateProps {
     vocabulary: [],
   };
   // top checkbox is checked
-  let areAllChecked = get(state, 'vocabulary.download.data.allChecked');
+  let areAllChecked = get(state, "vocabulary.download.data.allChecked");
   vocabularies.forEach((vocabulary) => {
     if (areAllChecked === true) {
       initialValues.vocabulary[`${vocabulary.id}`] = vocabulary.isCheckable;
@@ -68,15 +61,15 @@ function mapStateToProps(state: Object, ownProps: any): IResultsStateProps {
 
   if (!isEmpty(ownProps.predefinedVocabs)) {
     initialValues.vocabulary = [];
-    ownProps.predefinedVocabs.forEach(vocabId => {
+    ownProps.predefinedVocabs.forEach((vocabId) => {
       initialValues.vocabulary[vocabId] = true;
     });
   }
 
   const values = get(state, `form.${forms.download}.values.vocabulary`, []) || [];
 
-  const selection = get(state, `form.${forms.downloadSettings}.values.selection`, 'all');
-  if (selection !== 'all') {
+  const selection = get(state, `form.${forms.downloadSettings}.values.selection`, "all");
+  if (selection !== "all") {
     vocabularies = vocabularies.filter((v: Vocabulary) => get(values, `${v.id}`, false));
   }
 
@@ -94,7 +87,7 @@ function mapStateToProps(state: Object, ownProps: any): IResultsStateProps {
     areAllChecked,
     areAllRowsChecked,
     initialValues,
-    sorting: '',
+    sorting: "",
     vocabularies,
   };
 }
@@ -103,7 +96,8 @@ const mapDispatchToProps = {
   unselectAll: () => reset(forms.download),
   toggleAll: actions.download.toggleAllVocabs,
   toggle: (id: number, state: boolean) => reduxFormChange(forms.download, `vocabulary[${id}]`, state),
-  openRequestModal: (vocab: Vocabulary) => ModalUtils.actions.toggle(modal.requestLicense, true, vocab),
+  openRequestModal: (vocab: Vocabulary, typeModal?: string) =>
+    ModalUtils.actions.toggle(modal.requestLicense, true, { ...vocab, typeModal: typeModal || TYPE_MODAL.REQUEST_LICENSE }),
 };
 
 function mergeProps(
@@ -114,9 +108,7 @@ function mergeProps(
   return {
     ...stateProps,
     ...dispatchProps,
-    setSorting: () => {
-      
-    },
+    setSorting: () => {},
     toggleAllCheckboxes: () => dispatchProps.toggleAll(!stateProps.areAllChecked),
   };
 }

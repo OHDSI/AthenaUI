@@ -55,10 +55,23 @@ class ModalRequestLicense extends Component<IModalProps, {}> {
   }
 }
 
-const getStatisticValue = (state) =>
-  get(state, "form.requestLinsence.values", {
-    expiredDate: moment(),
+const getStatisticExpiredDateValue = (state, expiredDate) => {
+  let _expiredDate;
+  if (expiredDate) {
+    const expiredDateTS = new Date(moment(expiredDate).format()).getTime();
+    const currentDateTS = new Date().getTime();
+    if (expiredDateTS <= currentDateTS) {
+      _expiredDate = moment();
+    } else {
+      _expiredDate = moment(expiredDate);
+    }
+  } else {
+    _expiredDate = moment();
+  }
+  return get(state, "form.requestLinsence.values", {
+    expiredDate: _expiredDate,
   });
+};
 
 function mapStateToProps(state: any): IModalStateProps {
   const vocab: Vocabulary = get(state, "modal.requestLicense.data", {
@@ -74,14 +87,17 @@ function mapStateToProps(state: any): IModalStateProps {
     status: licenseStatuses.APPROVED,
     clickDefault: false,
     expiredDate: "",
+    typeModal: "",
   });
   const isLoading = get(state, "vocabulary.vocabLicenses.isSaving", false);
-  const expiredDate = getStatisticValue(state).expiredDate;
-
+  const expiredDate = getStatisticExpiredDateValue(state, vocab.expiredDate).expiredDate;
   return {
     vocab,
     isLoading,
     expiredDate,
+    initialValues: {
+      expiredDate,
+    },
   };
 }
 
@@ -120,10 +136,11 @@ const ModalRequestLicenseForm = reduxForm({
   onSubmit: () => {
     console.log("onSubmit");
   },
-  initialValues: {
-    expiredDate: moment(),
-  },
 })<any>(ModalRequestLicense);
 const ReduxModalWindow = ModalUtils.connect({ name: modal.requestLicense })(ModalRequestLicenseForm);
 
-export default connect<IModalStateProps, IModalDispatchProps, {}>(mapStateToProps, mapDispatchToProps, mergeProps)(ReduxModalWindow);
+export default connect<IModalStateProps, IModalDispatchProps, {}>(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(ReduxModalWindow);
