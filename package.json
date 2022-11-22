@@ -90,7 +90,7 @@
     "html-webpack-plugin": "4.0.0-beta.11",
     "ohdsi-ui-toolbox": "^1.0.0",
     "sass-loader": "^7.2.0",
-    "source-map-loader": "0.1.6",
+    "source-map-loader": "4.0.1",
     "style-loader": "1.1.3",
     "ts-loader": "4.5.0",
     "typescript": "2.3.4",
