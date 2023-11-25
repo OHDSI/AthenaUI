@@ -20,15 +20,23 @@
  *
  */
 
-@import 'styles/vars-and-mixins.scss';
+@import "styles/vars-and-mixins.scss";
 
 .#{$namespace} {
   &request-license {
     min-width: 500px;
 
-    &__request-button {
-      margin-top: 2rem;
+    &__request-date {
       width: 100%;
     }
+
+    &__request-button {
+      margin-top: 1rem;
+      width: 100%;
+    }
+  }
+
+  &date-picker {
+    display: block;
   }
 }

@@ -38,6 +38,8 @@ interface Vocabulary {
   status: string;
   clickDefault: boolean;
   required?: string;
+  expiredDate: string;
+  typeModal: string;
 };
 
 const getRawVocabs = (state: Object) => get(state, 'vocabulary.vocabularies.queryResult') || [];
@@ -47,7 +49,9 @@ const getVocabs = createSelector(
     (rawResults: Array<Vocabulary>) => rawResults.map((vocabulary: Vocabulary, index: number) => ({
       ...vocabulary,
       update: vocabulary.update ? moment(vocabulary.update).format(commonDateFormat) : '',
+      expiredDate: vocabulary.expiredDate ? moment(vocabulary.expiredDate).format(commonDateFormat) : '',
       isChecked: false,
+      typeModal: '',
       isCheckable: vocabulary.available === true,
       // for redux-form
       index,

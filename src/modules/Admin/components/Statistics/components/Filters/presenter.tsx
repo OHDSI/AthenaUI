@@ -20,136 +20,147 @@
  *
  */
 
-
-import * as React from 'react';
+import * as React from "react";
 import BEMHelper from "services/BemHelper";
 
-import { Button, Form, FormDatepicker, FormInput, FormToggle, LoadingPanel } from 'arachne-ui-components';
+import { Button, Form, FormDatepicker, FormInput, FormToggle, LoadingPanel } from "arachne-ui-components";
 import { commonDateFormat } from "const/formats";
 import { SortingParams } from "modules/Admin/actions/statistics";
+import DatePanel from "components/DatePanel";
 
-require('./style.scss');
+require("./style.scss");
 
 interface IStatisticsFilter {
-    from: any,
-    to: any,
-    keywords?: string,
-    licensedOnly?: boolean,
+  from: any;
+  to: any;
+  keywords?: string;
+  licensedOnly?: boolean;
 }
 
-interface IStatisticsFilterProps extends IStatisticsFilterStateProps, IStatisticsFilterDispatchProps, IStatisticsFilterOwnProps {
-    handleSubmit: Function
+interface IStatisticsFilterProps
+  extends IStatisticsFilterStateProps,
+    IStatisticsFilterDispatchProps,
+    IStatisticsFilterOwnProps {
+  handleSubmit: Function;
 }
 
 interface IStatisticsFilterDispatchProps {
-    loadStatistics: Function
+  loadStatistics: Function;
 }
 
 interface IStatisticsFilterStateProps {
-    isLoading: boolean,
-    filter: IStatisticsFilter
+  isLoading: boolean;
+  filter: IStatisticsFilter;
 }
 
 interface IStatisticsFilterOwnProps {
-    runSearch: (sorting?: SortingParams) => void,
-    downloadCSV: Function
+  runSearch: (sorting?: SortingParams) => void;
+  downloadCSV: Function;
+}
+
+function DatepickerControler({ options, input, titleDisplay }) {
+  const classes = BEMHelper("date-picker");
+
+  return (
+    <DatePanel
+      {...options}
+      {...classes()}
+      title={titleDisplay}
+      selected={input.value}
+      dateFormat={commonDateFormat}
+      isEditable={true}
+      onChange={input.onChange}
+    />
+  );
 }
 
 function Filters(props: IStatisticsFilterProps) {
-    const classes = BEMHelper('filters');
+  const classes = BEMHelper("filters");
 
-    const fields = [
-        {
-            name: 'keywords',
-            InputComponent: {
-                component: FormInput,
-                props: {
-                    title: 'Keywords',
-                    placeholder: 'Keywords',
-                    type: 'text',
-                },
-            },
+  const fields = [
+    {
+      name: "keywords",
+      InputComponent: {
+        component: FormInput,
+        props: {
+          title: "Keywords",
+          placeholder: "Keywords",
+          type: "text",
         },
-        {
-            name: 'from',
-            InputComponent: {
-                component: FormDatepicker,
-                props: {
-                    title: 'From',
-                    type: 'text',
-                    options: {
-                        selected: props.filter.from,
-                        dateFormat: commonDateFormat,
-                    },
-                }
-
-            }
+      },
+    },
+    {
+      name: "from",
+      InputComponent: {
+        component: DatepickerControler,
+        props: {
+          title: "From",
+          type: "text",
+          options: {
+            titleDisplay: "From",
+            selected: props.filter.from,
+            dateFormat: commonDateFormat,
+          },
         },
-        {
-            name: 'to',
-            InputComponent: {
-                component: FormDatepicker,
-                props: {
-                    title: 'To',
-                    type: 'text',
-                    options: {
-                        selected: props.filter.to,
-                        dateFormat: commonDateFormat,
-                    },
-                }
-
-            }
+      },
+    },
+    {
+      name: "to",
+      InputComponent: {
+        component: DatepickerControler,
+        props: {
+          title: "To",
+          type: "text",
+          options: {
+            titleDisplay: "To",
+            selected: props.filter.to,
+            dateFormat: commonDateFormat,
+          },
         },
-        {
-            name: 'licensedOnly',
-            InputComponent: {
-                component: FormToggle,
-                props: {
-                    label: 'License Only',
-                }
+      },
+    },
+    {
+      name: "licensedOnly",
+      InputComponent: {
+        component: FormToggle,
+        props: {
+          label: "License Only",
+        },
+      },
+    },
+  ];
+  const submitBtn = {
+    label: "Show",
+    loadingLabel: "Loading...",
+    mods: ["success", "rounded"],
+  };
 
-            }
-        }
-    ];
-    const submitBtn = {
-        label: 'Show',
-        loadingLabel: 'Loading...',
-        mods: ['success', 'rounded'],
-    };
-
-    return (
-        <div {...classes()}>
-            <div>
-                <Form
-                    {...props}
-                    fields={fields}
-                    submitBtn={submitBtn}
-                />
-            </div>
-            <div>
-
-                <Button
-                    {...classes({
-                        element: 'export-button',
-
-                    })}
-                    mods={['rounded']}
-                    onClick={props.downloadCSV}
-                >
-                    Export CSV
-                </Button>
-            </div>
-            <LoadingPanel active={props.isLoading}/>
-
-
-        </div>);
+  return (
+    <div {...classes()}>
+      <div>
+        <Form {...props} fields={fields} submitBtn={submitBtn} />
+      </div>
+      <div>
+        <Button
+          {...classes({
+            element: "export-button",
+          })}
+          mods={["rounded"]}
+          onClick={props.downloadCSV}
+        >
+          Export CSV
+        </Button>
+      </div>
+      <LoadingPanel active={props.isLoading} />
+    </div>
+  );
 }
 
 export default Filters;
 export {
-    IStatisticsFilter,
-    IStatisticsFilterStateProps,
-    IStatisticsFilterDispatchProps,
-    IStatisticsFilterProps,
-    IStatisticsFilterOwnProps
-}
+  IStatisticsFilter,
+  IStatisticsFilterStateProps,
+  IStatisticsFilterDispatchProps,
+  IStatisticsFilterProps,
+  IStatisticsFilterOwnProps,
+};

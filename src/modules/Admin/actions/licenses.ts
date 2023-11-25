@@ -60,10 +60,11 @@ function create(userId: number, vocabularyV4Ids: Array<number>) {
 	});
 }
 
-function resolve(id: number, accepted: boolean) {
+function resolve(id: number, accepted: boolean, expiredDate: any) {
 	return services.licenseAccept.create({
 		id,
 		accepted,
+		expiredDate,
 	});
 }
 

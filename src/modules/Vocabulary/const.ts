@@ -20,15 +20,16 @@
  *
  */
 
-import keyMirror = require('keymirror');
+import keyMirror = require("keymirror");
 
 const forms = keyMirror({
   download: null,
   share: null,
-	toolbar: null,
+  toolbar: null,
   downloadSettings: null,
   bundle: null,
   notifications: null,
+  requestLinsence: null,
 });
 
 const modal = keyMirror({
@@ -46,29 +47,29 @@ const actionTypes = keyMirror({
 });
 
 const paths = {
-  vocabsList: () => '/vocabulary/list',
-  history: () => '/vocabulary/download-history',
+  vocabsList: () => "/vocabulary/list",
+  history: () => "/vocabulary/download-history",
 };
 
 const apiPaths = {
-  availability: id => `/vocabularies/check/${id}`,
-  share: id => `/vocabularies/downloads/${id}/share`,
+  availability: (id) => `/vocabularies/check/${id}`,
+  share: (id) => `/vocabularies/downloads/${id}/share`,
 };
 
 const resultsPageSize = 15;
 
 const cdmVersions = [
   {
-    label: 'CDM VERSION',
-    value: '',
+    label: "CDM VERSION",
+    value: "",
   },
-	{
-    label: '4.x',
-    value: '4.5',
+  {
+    label: "4.x",
+    value: "4.5",
   },
-	{
-    label: '5.x',
-    value: '5',
+  {
+    label: "5.x",
+    value: "5",
   },
 ];
 
@@ -79,13 +80,9 @@ const bundleStatuses: { [key: string]: string } = keyMirror({
   ARCHIVED: null,
 });
 
-export {
-  actionTypes,
-  apiPaths,
-  cdmVersions,
-  forms,
-  modal,
-  paths,
-  resultsPageSize,
-  bundleStatuses,
+const TYPE_MODAL = {
+  REQUEST_LICENSE: "REQUEST_LICENSE",
+  UPDATE_LICENSE: "UPDATE_LICENSE",
 };
+
+export { actionTypes, apiPaths, cdmVersions, forms, modal, paths, resultsPageSize, bundleStatuses, TYPE_MODAL };

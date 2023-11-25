@@ -20,7 +20,7 @@
  *
  */
 
-@import 'styles/vars-and-mixins.scss';
+@import "styles/vars-and-mixins.scss";
 
 .#{$namespace} {
   &vocabularies {
@@ -43,7 +43,7 @@
       width: 10%;
     }
     &__name-th {
-      width: 50%;
+      width: 37.5%;
     }
     &__required-th {
       width: 12.5%;
@@ -51,11 +51,14 @@
     &__update-th {
       width: 12.5%;
     }
+    &__expiredDate-th {
+      width: 12.5%;
+    }
 
     &__selected-row {
       background: $grey-light;
     }
-      
+
     &__cell {
       &--disabled {
         @include material-icon();
@@ -92,6 +95,17 @@
     &__icon {
       @include material-icon();
       margin-right: 1rem;
+    }
+  }
+
+  &cell-checked {
+    height: 100%;
+    
+    &__licenseExpired {
+      color: #f6f6f6;
+      opacity: 0;
+      height: 100%;
+      display: block;
     }
   }
 }
