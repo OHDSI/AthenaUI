@@ -27,6 +27,7 @@ import download from './download';
 export default combineReducers({
 	download,
 	vocabularies: services.vocabularies.reducer,
+	versions: services.vocabularyVersions.reducer,
 	history: services.history.reducer,
 	vocabLicenses: services.vocabLicenses.reducer,
 	restore: services.restore.reducer,

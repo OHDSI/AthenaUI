@@ -20,28 +20,23 @@
  *
  */
 
-import reduxifyServices from 'feathers-reduxify-services';
-import API from 'services/Api';
+import {createSelector} from 'reselect';
+import {get} from 'lodash';
 
-interface ISearchTermsServices {
-	vocabularies: any;
-	vocabularyVersions: any;
-	download: any;
-	history: any;
-	vocabLicenses: any;
-	restore: any;
-	notifications: any;
+interface Version {
+    value: string;
+    label: string;
 }
 
-export default <ISearchTermsServices> reduxifyServices(
-	API,
-	{
-		'vocabularies': 'vocabularies',
-		'vocabularies/vocabulary-release-versions': 'vocabularyVersions',
-		'vocabularies/save': 'download',
-		'vocabularies/downloads': 'history',
-		'vocabularies/licenses/request': 'vocabLicenses',
-		'vocabularies/restore': 'restore',
-		'notifications': 'notifications',
-	}
+const getRawVocabVersions = (state: Object) => get(state, 'vocabulary.versions.queryResult') || [];
+
+const getVocabVersions = createSelector(
+    getRawVocabVersions,
+    (rawResults: Array<Version>) => rawResults
 );
+
+export default {
+    getVocabVersions,
+};
+
+export {Version};

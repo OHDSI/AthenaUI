@@ -28,9 +28,14 @@ import {ModalUtils} from 'arachne-ui-components';
 import { cdmVersions, forms, modal } from 'modules/Vocabulary/const';
 import { get } from 'lodash';
 import selectors from 'modules/Vocabulary/components/List/components/Results/selectors';
+import versionSelectors from 'modules/Vocabulary/components/List/components/ModalConfirmDownload/selectors';
 import presenter, { IModalDispatchProps, IModalProps, IModalStateProps } from './presenter';
 
 class ModalConfirmDownload extends Component<IModalProps, {}> {
+
+  componentWillMount() {
+    this.props.loadVocabVersions();
+  }
   componentWillReceiveProps(nextProps) {
     if (this.props.isOpened !== nextProps.isOpened && nextProps.isOpened === true) {
       this.props.reset();
@@ -43,6 +48,8 @@ class ModalConfirmDownload extends Component<IModalProps, {}> {
 }
 
 function mapStateToProps(state: any): IModalStateProps {
+
+  let vocabularyVersion = versionSelectors.getVocabVersions(state);
   const formSelectedVocabularies = get(state, `form.${forms.download}.values.vocabulary`, []);
   const selectedVocabIds = [];
   formSelectedVocabularies.map((voc: any, id: number) => {
@@ -55,13 +62,16 @@ function mapStateToProps(state: any): IModalStateProps {
   const isOpened = get(state, `modal.${modal.download}.isOpened`, false);
   const isLoading = get(state, 'vocabulary.download.isSaving', false)
     || get(state, 'vocabulary.notifications.isSaving', false);
-
+  const isDelta = get(state, "form.bundle.values.delta",false);
 	return {
     selectedVocabs,
     selectedVocabIds,
     isOpened,
+    isDelta,
+    vocabularyVersion,
     initialValues: {
       cdmVersion: cdmVersions[cdmVersions.length - 1].value,
+      vocabularyVersion: vocabularyVersion.length > 0  ? vocabularyVersion[0].value : ""
     },
     isLoading,
   };
@@ -69,6 +79,7 @@ function mapStateToProps(state: any): IModalStateProps {
 
 const mapDispatchToProps = {
   requestDownload: actions.download.requestDownload,
+  loadVocabVersions: actions.download.loadVocabVersions,
   remove: (id: number) => reduxFormChange(forms.download, `vocabulary[${id}]`, false),
   close: () => ModalUtils.actions.toggle(modal.download, false),
   showResult: () => ModalUtils.actions.toggle(modal.downloadResult, true),
@@ -92,11 +103,14 @@ function mergeProps(
         dispatchProps.close();
       }
     },
-    download: ({bundleName, cdmVersion, notify}) => {
+    download: ({bundleName, cdmVersion, vocabularyVersion, delta, deltaVersion, notify}) => {
       let downloadVocabsAction = dispatchProps.requestDownload({
         cdmVersion: cdmVersion,
         ids: stateProps.selectedVocabIds.join(','),
         name: bundleName,
+        vocabularyVersion: vocabularyVersion,
+        delta: delta,
+        deltaVersion: deltaVersion
       });
 
       if (notify) {
