@@ -39,8 +39,8 @@ interface IModalStateProps {
 	selectedVocabs: Array<IVocab>;
 	selectedVocabIds: Array<number>;
 	isOpened: boolean;
-    isDelta: boolean;
-    vocabularyVersion: Array<any>
+	isDelta: boolean;
+	vocabularyVersion: Array<any>
 	initialValues: {
 		[key: string]: any;
 	};
@@ -144,8 +144,8 @@ function ModalConfirmDownload(props: IModalProps) {
         handleSubmit,
         error,
         isLoading,
-		isDelta,
-		vocabularyVersion
+        isDelta,
+        vocabularyVersion
     } = props;
     const classes = BEMHelper('confirm-download');
 
