@@ -57,21 +57,6 @@ const apiPaths = {
 
 const resultsPageSize = 15;
 
-const cdmVersions = [
-  {
-    label: 'CDM VERSION',
-    value: '',
-  },
-	{
-    label: '4.x',
-    value: '4.5',
-  },
-	{
-    label: '5.x',
-    value: '5',
-  },
-];
-
 const bundleStatuses: { [key: string]: string } = keyMirror({
   PENDING: null,
   READY: null,
@@ -82,7 +67,6 @@ const bundleStatuses: { [key: string]: string } = keyMirror({
 export {
   actionTypes,
   apiPaths,
-  cdmVersions,
   forms,
   modal,
   paths,

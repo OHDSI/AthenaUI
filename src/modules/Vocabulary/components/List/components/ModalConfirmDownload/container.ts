@@ -25,7 +25,7 @@ import { connect } from 'react-redux';
 import actions from 'modules/Vocabulary/actions';
 import { change as reduxFormChange, reduxForm, reset, SubmissionError } from 'redux-form';
 import {ModalUtils} from 'arachne-ui-components';
-import { cdmVersions, forms, modal } from 'modules/Vocabulary/const';
+import { forms, modal } from 'modules/Vocabulary/const';
 import { get } from 'lodash';
 import selectors from 'modules/Vocabulary/components/List/components/Results/selectors';
 import versionSelectors from 'modules/Vocabulary/components/List/components/ModalConfirmDownload/selectors';
@@ -70,7 +70,6 @@ function mapStateToProps(state: any): IModalStateProps {
     isDelta,
     vocabularyVersion,
     initialValues: {
-      cdmVersion: cdmVersions[cdmVersions.length - 1].value,
       vocabularyVersion: vocabularyVersion.length > 0  ? vocabularyVersion[0].value : ""
     },
     isLoading,
@@ -103,9 +102,8 @@ function mergeProps(
         dispatchProps.close();
       }
     },
-    download: ({bundleName, cdmVersion, vocabularyVersion, delta, deltaVersion, notify}) => {
+    download: ({bundleName, vocabularyVersion, delta, deltaVersion, notify}) => {
       let downloadVocabsAction = dispatchProps.requestDownload({
-        cdmVersion: cdmVersion,
         ids: stateProps.selectedVocabIds.join(','),
         name: bundleName,
         vocabularyVersion: vocabularyVersion,
