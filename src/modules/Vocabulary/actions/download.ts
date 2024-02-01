@@ -27,7 +27,6 @@ import { actionTypes, apiPaths } from 'modules/Vocabulary/const';
 import { IAppAction } from 'actions';
 
 type DownloadParams = {
-  cdmVersion: string;
   ids: string;
   name: string;
   vocabularyVersion: string,

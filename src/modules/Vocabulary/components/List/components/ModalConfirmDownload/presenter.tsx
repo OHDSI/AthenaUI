@@ -24,7 +24,6 @@ import * as React from 'react';
 import BEMHelper from 'services/BemHelper';
 import { Modal, ListItem, Button, Select, Checkbox, LoadingPanel } from 'arachne-ui-components';
 import { DownloadParams } from 'modules/Vocabulary/actions/download';
-import { cdmVersions } from 'modules/Vocabulary/const';
 import { Field } from 'redux-form';
 
 require('./style.scss');
@@ -39,8 +38,8 @@ interface IModalStateProps {
 	selectedVocabs: Array<IVocab>;
 	selectedVocabIds: Array<number>;
 	isOpened: boolean;
-    isDelta: boolean;
-    vocabularyVersion: Array<any>
+	isDelta: boolean;
+	vocabularyVersion: Array<any>
 	initialValues: {
 		[key: string]: any;
 	};
@@ -80,16 +79,6 @@ function BundleName(props: IReduxFieldProps) {
 		onChange={input.onChange}
 		placeholder='name bundle'
 	/>;
-}
-
-function cdmVersionSelect(props: IReduxFieldProps) {
-  const { options, input } = props;
-  return (<Select
-    className={options.className}
-    options={cdmVersions}
-    value={input.value}
-    onChange={input.onChange}
-   />);
 }
 
 function VocabularyVersion(props: IReduxFieldProps) {
@@ -144,8 +133,8 @@ function ModalConfirmDownload(props: IModalProps) {
         handleSubmit,
         error,
         isLoading,
-		isDelta,
-		vocabularyVersion
+        isDelta,
+        vocabularyVersion
     } = props;
     const classes = BEMHelper('confirm-download');
 
@@ -157,11 +146,6 @@ function ModalConfirmDownload(props: IModalProps) {
 	    			<Field component={BundleName} name='bundleName' options={{
 	    				className: classes('bundle-name-input').className
 	    			}} />
-			      <Field
-			        component={cdmVersionSelect}
-			        options={{...classes('cdm-version-select')}}
-			        name='cdmVersion'
-			      />
 	    		</div>
 				<div {...classes('delta-name')}>
 					<Field

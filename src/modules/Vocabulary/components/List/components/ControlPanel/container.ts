@@ -22,7 +22,7 @@
 
 import * as URI from 'urijs';
 import actions from 'modules/Vocabulary/actions';
-import { cdmVersions, modal } from 'modules/Vocabulary/const';
+import { modal } from 'modules/Vocabulary/const';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { forms } from 'modules/Vocabulary/const';
