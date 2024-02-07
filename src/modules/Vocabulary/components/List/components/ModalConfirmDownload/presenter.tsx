@@ -98,7 +98,7 @@ function Delta(props: IReduxFieldProps) {
 		className={options.className}
 		isChecked={input.value === true}
 		onChange={input.onChange}
-		label='Delta from:'
+		label='Delta from older version:'
 	/>);
 }
 

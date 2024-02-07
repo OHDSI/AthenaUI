@@ -50,6 +50,13 @@ const paths = {
   history: () => '/vocabulary/download-history',
 };
 
+const bundleType = {
+  V4_5: 'V4_5',
+  V5: 'V5',
+  V5_DELTAS: 'V5_DELTAS',
+  V5_HISTORIES: 'V5_HISTORIES'
+};
+
 const apiPaths = {
   availability: id => `/vocabularies/check/${id}`,
   share: id => `/vocabularies/downloads/${id}/share`,
@@ -70,6 +77,7 @@ export {
   forms,
   modal,
   paths,
+  bundleType,
   resultsPageSize,
   bundleStatuses,
 };
