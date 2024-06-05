@@ -88,6 +88,7 @@ function VocabularyVersion(props: IReduxFieldProps) {
 		options={options.vocabularyVersion}
 		value={input.value}
 		onChange={input.onChange}
+		placeholder="choose a version"
 	/>);
 }
 
@@ -111,6 +112,7 @@ function DeltaVersion(props: IReduxFieldProps) {
 		value={input.value}
 		onChange={input.onChange}
 		disabled={options.isDisabled}
+		placeholder="choose a version"
 	/>);
 }
 
