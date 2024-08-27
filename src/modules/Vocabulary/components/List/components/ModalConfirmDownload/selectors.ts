@@ -15,21 +15,32 @@
  *
  * Company: Odysseus Data Services, Inc.
  * Product Owner/Architecture: Gregory Klebanov
- * Authors: Alexandr Saltykov, Pavel Grafkin, Vitaly Koulakov, Anton Gackovka
- * Created: March 3, 2017
+ * Author: Yaroslav Molodkov
+ * Created: December 7, 2023
  *
  */
 
-import { combineReducers } from 'redux';
-import services from '../apiServices';
-import download from './download';
+import {createSelector} from 'reselect';
+import {get} from 'lodash';
 
-export default combineReducers({
-	download,
-	vocabularies: services.vocabularies.reducer,
-	versions: services.vocabularyVersions.reducer,
-	history: services.history.reducer,
-	vocabLicenses: services.vocabLicenses.reducer,
-	restore: services.restore.reducer,
-	notifications: services.notifications.reducer,
-});
+interface Version {
+    value: string;
+    label: string;
+    current: boolean;
+}
+
+const getRawVocabVersions = (state: Object) => get(state, 'vocabulary.versions.queryResult') || [];
+
+const getVocabVersions = createSelector( getRawVocabVersions,
+    (rawResults: Array<Version>) => rawResults.map((version: Version) => ({
+        value: version.value,
+        label: version.current? version.label +"[Current]": version.label,
+        current: version.current
+    })),
+);
+
+export default {
+    getVocabVersions,
+};
+
+export {Version};
