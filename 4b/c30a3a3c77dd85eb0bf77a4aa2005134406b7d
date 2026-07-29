@@ -1,0 +1,23 @@
+pom.xml
+  s_a286bd50da0ec0::t_6b2f3e49f00ec6 6
+package-lock.json
+  s_a286bd50da0ec0::t_661d3c0d7f6cb0 6504-6506
+package.json
+  s_a286bd50da0ec0::t_67411cf9482b3f 40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "4bc30a3a3c77dd85eb0bf77a4aa2005134406b7d",
+  "prompts": {},
+  "sessions": {
+    "s_a286bd50da0ec0": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "f5494127-66ae-4088-9d88-335640617193",
+        "model": "default"
+      },
+      "human_author": "User <user@example.com>"
+    }
+  }
+}
