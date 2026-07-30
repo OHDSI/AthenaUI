@@ -25,31 +25,68 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import * as get from 'lodash/get';
 import actions from 'modules/Auth/actions';
-
-interface ILoginCompleteState {
-	authToken: string;
-}
+import { readTokenFromHash } from './token';
 
 interface ILoginCompleteDispatch {
 	setAuthToken: Function;
 }
 
-interface ILoginCompleteProps extends ILoginCompleteState, ILoginCompleteDispatch {};
+interface ILoginCompleteProps extends ILoginCompleteDispatch {};
 
-class LoginComplete extends Component<ILoginCompleteProps, {}> {
+interface ILoginCompleteState {
+	authToken: string;
+}
+
+/**
+ * Landing page of the SSO popup. The back end redirects here with the token in the URL
+ * fragment; this hands it to the opener and closes the window.
+ *
+ * The token arrives after the '#', not as a query parameter, because a fragment is never sent
+ * to a server — see readTokenFromHash. It is therefore read from window.location.hash rather
+ * than from the router state, which only carries what the server could see.
+ */
+class LoginComplete extends Component<ILoginCompleteProps, ILoginCompleteState> {
+
+	constructor(props: ILoginCompleteProps) {
+		super(props);
+		this.state = { authToken: '' };
+	}
+
 	componentWillMount() {
-		this.props.setAuthToken(this.props.authToken);
-		window.opener.postMessage({
-			data: this.props.authToken,
-			type: 'loginResult',
-		}, get(window, 'location.origin'));
-		window.close();
+		const authToken = readTokenFromHash(get(window, 'location.hash', ''));
+		this.setState({ authToken });
+
+		if (!authToken) {
+			return;
+		}
+
+		this.props.setAuthToken(authToken);
+
+		// Drop the token from the address bar so it does not sit in this window's history
+		// entry. Best effort: replaceState is unavailable in very old browsers, and losing
+		// the cosmetic cleanup must not prevent the login from completing.
+		try {
+			window.history.replaceState(null, '', get(window, 'location.pathname', ''));
+		} catch (e) {
+			// ignored on purpose
+		}
+
+		// The popup is opened by the main window, which is waiting for this message. Guard
+		// the opener: someone reaching this URL directly has no window to post to, and an
+		// exception here would replace the message below with a blank page.
+		if (window.opener) {
+			window.opener.postMessage({
+				data: authToken,
+				type: 'loginResult',
+			}, get(window, 'location.origin'));
+			window.close();
+		}
 	}
 
 	render() {
 		return (
 			<div>
-				{this.props.authToken ?
+				{this.state.authToken ?
 					<span>You have successfuly logged in. Close the window and refresh page.</span>
 					:
 					<span>An error occured. Try once more.</span>
@@ -59,17 +96,11 @@ class LoginComplete extends Component<ILoginCompleteProps, {}> {
 	}
 }
 
-function mapStateToProps(state: any): ILoginCompleteState {
-	return {
-		authToken: get(state, 'routing.locationBeforeTransitions.query.token'),
-	} as ILoginCompleteState;
-}
-
 const mapDispatchToProps = {
 	setAuthToken: actions.core.setToken,
 };
 
-export default connect<ILoginCompleteState, Object, {}>(
-	mapStateToProps,
+export default connect<{}, ILoginCompleteDispatch, {}>(
+	null,
 	mapDispatchToProps
 )(LoginComplete);
