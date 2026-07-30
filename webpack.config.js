@@ -101,7 +101,21 @@ module.exports = function(env) {
       port: 3000,
       proxy: [
         {
-          context: ['/api', '/auth/sso', '/auth/slo'],
+          // `/auth/sso` requires authentication server-side, so Spring Security
+          // bounces it through its own entry point: /auth/sso -> 302 /login ->
+          // (SAML) /saml2/**. Those hops belong to the backend, but they are
+          // plain page loads, so without them listed here historyApiFallback
+          // swallows the redirect and serves index.html - the SSO popup then
+          // renders the SPA shell with no matching route, i.e. blank.
+          context: [
+            '/api',
+            '/auth/sso',
+            '/auth/slo',
+            '/login',
+            '/logout',
+            '/saml2',
+            '/default-ui.css',
+          ],
           target: 'http://localhost:3010',
         },
       ],
