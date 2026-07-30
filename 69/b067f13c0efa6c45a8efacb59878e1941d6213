@@ -1,0 +1,14 @@
+src/services/Api.ts
+  h_2cf7f46272c8c9 95
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.17",
+  "base_commit_sha": "69b067f13c0efa6c45a8efacb59878e1941d6213",
+  "prompts": {},
+  "humans": {
+    "h_2cf7f46272c8c9": {
+      "author": "User <user@example.com>"
+    }
+  }
+}
