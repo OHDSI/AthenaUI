@@ -92,7 +92,7 @@ function configure(props: ApiConfig): Promise<any> {
         //
         // The API historically answered *every* error with HTTP 200 and an `errorMessage`
         // in the body, so the `after` hook above was the only place errors were turned
-        // into a readable message. As the backend moves to real status codes (SEC-09),
+        // into a readable message. As the backend moves to real status codes,
         // that hook stops running and the message would otherwise be replaced by the bare
         // HTTP status text — e.g. the licence explanation in the download modal becoming
         // "Bad Request".
