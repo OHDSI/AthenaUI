@@ -15,21 +15,11 @@
  *
  * Company: Odysseus Data Services, Inc.
  * Product Owner/Architecture: Gregory Klebanov
- * Authors: Alexandr Saltykov, Pavel Grafkin, Vitaly Koulakov, Anton Gackovka
- * Created: March 3, 2017
+ * Authors: Alexandr Saltykov, Pavel Grafkin, Vitaly Koulakov, Anton Gackovka, Osmar Benavidez
+ * Created: October 3, 2023
  *
  */
 
-import { combineReducers } from 'redux';
-import services from '../apiServices';
-import download from './download';
+import SynonymsLangTable from './container';
 
-export default combineReducers({
-	download,
-	vocabularies: services.vocabularies.reducer,
-	versions: services.vocabularyVersions.reducer,
-	history: services.history.reducer,
-	vocabLicenses: services.vocabLicenses.reducer,
-	restore: services.restore.reducer,
-	notifications: services.notifications.reducer,
-});
+export default SynonymsLangTable;

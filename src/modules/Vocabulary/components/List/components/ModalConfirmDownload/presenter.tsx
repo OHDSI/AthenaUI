@@ -24,7 +24,6 @@ import * as React from 'react';
 import BEMHelper from 'services/BemHelper';
 import { Modal, ListItem, Button, Select, Checkbox, LoadingPanel } from 'arachne-ui-components';
 import { DownloadParams } from 'modules/Vocabulary/actions/download';
-import { cdmVersions } from 'modules/Vocabulary/const';
 import { Field } from 'redux-form';
 
 require('./style.scss');
@@ -39,6 +38,8 @@ interface IModalStateProps {
 	selectedVocabs: Array<IVocab>;
 	selectedVocabIds: Array<number>;
 	isOpened: boolean;
+	isDelta: boolean;
+	vocabularyVersion: Array<any>
 	initialValues: {
 		[key: string]: any;
 	};
@@ -50,6 +51,7 @@ interface IModalDispatchProps {
 	close: () => null;
 	download: () => null;
 	requestDownload: (params: DownloadParams) => any;
+	loadVocabVersions: () => any;
 	showResult: () => null;
 	reset: Function;
 	notify: Function;
@@ -79,14 +81,39 @@ function BundleName(props: IReduxFieldProps) {
 	/>;
 }
 
-function cdmVersionSelect(props: IReduxFieldProps) {
-  const { options, input } = props;
-  return (<Select
-    className={options.className}
-    options={cdmVersions}
-    value={input.value}
-    onChange={input.onChange}
-   />);
+function VocabularyVersion(props: IReduxFieldProps) {
+	const { options, input } = props;
+	return (<Select
+		className={options.className}
+		options={options.vocabularyVersion}
+		value={input.value}
+		onChange={input.onChange}
+		placeholder="choose a version"
+	/>);
+}
+
+function Delta(props: IReduxFieldProps) {
+	const { options, input } = props;
+
+	return (<Checkbox
+		className={options.className}
+		isChecked={input.value === true}
+		onChange={input.onChange}
+		label='Delta from older version:'
+	/>);
+}
+
+function DeltaVersion(props: IReduxFieldProps) {
+	const { options, input} = props;
+
+	return (<Select
+		className={options.className}
+		options={options.vocabularyVersion}
+		value={input.value}
+		onChange={input.onChange}
+		disabled={options.isDisabled}
+		placeholder="choose a version"
+	/>);
 }
 
 function Notify(props: IReduxFieldProps) {
@@ -99,19 +126,21 @@ function Notify(props: IReduxFieldProps) {
 }
 
 function ModalConfirmDownload(props: IModalProps) {
-  const {
-    close,
-    download,
-    modal,
-    removeVocabulary,
-    selectedVocabs,
-    handleSubmit,
-    error,
-    isLoading,
-  } = props;
-  const classes = BEMHelper('confirm-download');
+    const {
+        close,
+        download,
+        modal,
+        removeVocabulary,
+        selectedVocabs,
+        handleSubmit,
+        error,
+        isLoading,
+        isDelta,
+        vocabularyVersion
+    } = props;
+    const classes = BEMHelper('confirm-download');
 
-  return (
+	return (
     <Modal modal={modal} title='Download summary' mods={['no-padding']}>
 	    <form onSubmit={handleSubmit(download)}>
 	    	<div {...classes()}>
@@ -119,12 +148,24 @@ function ModalConfirmDownload(props: IModalProps) {
 	    			<Field component={BundleName} name='bundleName' options={{
 	    				className: classes('bundle-name-input').className
 	    			}} />
-			      <Field
-			        component={cdmVersionSelect}
-			        options={{...classes('cdm-version-select')}}
-			        name='cdmVersion'
-			      />
 	    		</div>
+				<div {...classes('delta-name')}>
+					<Field
+						component={VocabularyVersion}
+						options={{...classes('vocabulary-version-select'), vocabularyVersion: vocabularyVersion}}
+						name='vocabularyVersion'
+					/>
+					<Field
+						component={Delta}
+						options={{...classes('delta-checkbox')}}
+						name='delta'
+					/>
+					<Field
+						component={DeltaVersion}
+						options={{...classes('delta-version-select'), vocabularyVersion: vocabularyVersion, isDisabled: !isDelta}}
+						name='deltaVersion'
+					/>
+				</div>
 		      {selectedVocabs && selectedVocabs.map((voc: IVocab, index: number) =>
 		      	<ListItem key={index}>
 		      		{voc.name}

@@ -27,9 +27,11 @@ import { actionTypes, apiPaths } from 'modules/Vocabulary/const';
 import { IAppAction } from 'actions';
 
 type DownloadParams = {
-	cdmVersion: string;
-	ids: string;
+  ids: string;
   name: string;
+  vocabularyVersion: string,
+  delta: boolean,
+  deltaVersion: string,
 };
 
 function toggleVocabsList(value: boolean): IAppAction<{ allChecked: boolean }> {
@@ -43,6 +45,10 @@ function toggleVocabsList(value: boolean): IAppAction<{ allChecked: boolean }> {
 
 function toggleAllVocabs(value: boolean) {
   return (dispatch: Function) => dispatch(toggleVocabsList(value));
+}
+
+function loadVocabVersions() {
+  return services.vocabularyVersions.find();
 }
 
 function checkBundleAvailability(id: string) {
@@ -70,6 +76,7 @@ function getNotifications() {
 
 export default {
   toggleAllVocabs,
+  loadVocabVersions,
   requestDownload,
   removeNotification,
   requestNotifications,

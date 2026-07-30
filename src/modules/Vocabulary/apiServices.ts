@@ -25,6 +25,7 @@ import API from 'services/Api';
 
 interface ISearchTermsServices {
 	vocabularies: any;
+	vocabularyVersions: any;
 	download: any;
 	history: any;
 	vocabLicenses: any;
@@ -36,6 +37,7 @@ export default <ISearchTermsServices> reduxifyServices(
 	API,
 	{
 		'vocabularies': 'vocabularies',
+		'vocabularies/vocabulary-release-versions': 'vocabularyVersions',
 		'vocabularies/save': 'download',
 		'vocabularies/downloads': 'history',
 		'vocabularies/licenses/request': 'vocabLicenses',

@@ -50,27 +50,19 @@ const paths = {
   history: () => '/vocabulary/download-history',
 };
 
+const bundleType = {
+  V4_5: 'V4_5',
+  V5: 'V5',
+  V5_DELTAS: 'V5_DELTAS',
+  V5_HISTORIES: 'V5_HISTORIES'
+};
+
 const apiPaths = {
   availability: id => `/vocabularies/check/${id}`,
   share: id => `/vocabularies/downloads/${id}/share`,
 };
 
 const resultsPageSize = 15;
-
-const cdmVersions = [
-  {
-    label: 'CDM VERSION',
-    value: '',
-  },
-	{
-    label: '4.x',
-    value: '4.5',
-  },
-	{
-    label: '5.x',
-    value: '5',
-  },
-];
 
 const bundleStatuses: { [key: string]: string } = keyMirror({
   PENDING: null,
@@ -82,10 +74,10 @@ const bundleStatuses: { [key: string]: string } = keyMirror({
 export {
   actionTypes,
   apiPaths,
-  cdmVersions,
   forms,
   modal,
   paths,
+  bundleType,
   resultsPageSize,
   bundleStatuses,
 };

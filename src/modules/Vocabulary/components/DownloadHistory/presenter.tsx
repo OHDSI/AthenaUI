@@ -29,7 +29,7 @@ import {
   TableCellText,
 } from 'arachne-ui-components';
 import BEMHelper from 'services/BemHelper';
-import { paths, bundleStatuses } from 'modules/Vocabulary/const';
+import { paths, bundleStatuses, bundleType } from 'modules/Vocabulary/const';
 import * as moment from 'moment';
 import {
   Accordion,
@@ -57,6 +57,10 @@ interface IDownloadRequest {
   cdmVersion: number;
   name: string;
   status: string;
+  type: string;
+  releaseVersion: string;
+  vocabularyReleaseVersion: string;
+  deltaReleaseVersion: string;
 };
 
 interface IHistoryItem extends IVocabulary {
@@ -93,7 +97,19 @@ interface IDownloadHistoryStatefulProps {
   expandedBundleId: number;
 };
 
-function BundleName({ name, date, onClick, isOpened, releaseVersion, downloadShareDTO, currentUser }) {
+function getTitle(type, releaseVersion, vocabularyReleaseVersion, deltaReleaseVersion) {
+  switch (type) {
+    case bundleType.V5_HISTORIES:
+      return vocabularyReleaseVersion;
+    case bundleType.V5_DELTAS:
+      return `Delta between ${vocabularyReleaseVersion} and ${deltaReleaseVersion}`;
+  }
+  return releaseVersion;
+}
+
+function BundleName({ name, date, onClick, isOpened, type, releaseVersion, vocabularyReleaseVersion, deltaReleaseVersion, downloadShareDTO, currentUser }) {
+  const versionTitle = getTitle(type, releaseVersion, vocabularyReleaseVersion, deltaReleaseVersion);
+
   const dateFormat = fullDateFormat;
   const classes = BEMHelper('bundle-caption');
   const isAlreadyShared = downloadShareDTO && downloadShareDTO.ownerUsername === currentUser;
@@ -102,7 +118,7 @@ function BundleName({ name, date, onClick, isOpened, releaseVersion, downloadSha
     <div {...classes('title-wrapper')}>
       {name}
       <span {...classes('date')}>{moment(date).format(dateFormat)}</span>
-      <span {...classes('version')}>{releaseVersion}</span>
+      <span {...classes('version')}>{versionTitle}</span>
       {downloadShareDTO && !isAlreadyShared && <span {...classes('shared-by')}>Shared by {downloadShareDTO.ownerUsername}</span>}
      </div>
   </div>;
