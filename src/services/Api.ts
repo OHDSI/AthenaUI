@@ -34,6 +34,34 @@ import { authTokenName } from 'const';
 const corePath = '/api/v1';
 let API = feathers();
 
+// `String({})`, i.e. "[object Object]". feathers-errors builds the error with
+// `new Error(body.message || body)`, so a response body carrying no `message`
+// field gets stringified whole and the message degrades to this literal. That
+// is what a plain Spring error body produces, which is why `error.message` is
+// not trustworthy on its own.
+const STRINGIFIED_OBJECT = String({});
+
+/**
+ * Pull a human-readable message out of an API error, across the response
+ * shapes this backend can return:
+ *
+ *   {errorCode, errorMessage, ...}          legacy JsonResult, sent with HTTP 200
+ *   {timestamp, status, error, path}        Spring's default error body
+ *   {..., message}                          Spring with server.error.include-message
+ */
+function readErrorMessage(hook): string {
+  const wrapped = get(hook, 'error.errorMessage', '');
+  if (wrapped) {
+    return wrapped;
+  }
+  const message = get(hook, 'error.message', '');
+  if (message && message !== STRINGIFIED_OBJECT) {
+    return message;
+  }
+  // `error` holds the reason phrase - "Forbidden", "Bad Request".
+  return get(hook, 'error.error', '');
+}
+
 interface ApiConfig {
   getAuthToken: Function;
   onAccessDenied: Function;
@@ -77,6 +105,13 @@ function configure(props: ApiConfig): Promise<any> {
     },
 
     error(hook) {
+      // NB: Spring Security answers an unauthenticated request with 403, not 401,
+      // so in practice this branch does not fire and there is no automatic login
+      // redirect. Do not "fix" that by treating 403 as access-denied: public pages
+      // call auth-gated endpoints and ignore the failure (the search start page
+      // requests vocabularies/release-version), so redirecting on 403 would bounce
+      // anonymous users off pages they are allowed to see. Routing already guards
+      // the private pages via Auth.requireOnPathEnter.
       if (hook.error.status === 401) {
         onAccessDenied();
       } else {
@@ -92,17 +127,18 @@ function configure(props: ApiConfig): Promise<any> {
         //
         // The API historically answered *every* error with HTTP 200 and an `errorMessage`
         // in the body, so the `after` hook above was the only place errors were turned
-        // into a readable message. As the backend moves to real status codes,
-        // that hook stops running and the message would otherwise be replaced by the bare
-        // HTTP status text — e.g. the licence explanation in the download modal becoming
-        // "Bad Request".
+        // into a readable message. As the backend moves to real status codes, that hook
+        // stops running, and without this the licence explanation in the download modal
+        // would degrade to "[object Object]" - `errorMessage` is absent from a plain
+        // Spring error body, and so is `message`, so feathers-errors stringifies the
+        // whole body. See readErrorMessage for the shapes involved.
         //
-        // This is deliberately backwards compatible: it changes nothing while the API
-        // still returns 200, so it can ship ahead of the backend change.
+        // This is backwards compatible: while the API still returns 200 the `after`
+        // hook keeps handling errors and this branch is not reached.
         // Rewrite the message on the original error rather than throwing a new
         // one, so callers keep the rest of the error contract (status, code,
-        // data, response) - the 401 branch above relies on `status` being there.
-        const errorMessage = get(hook, 'error.errorMessage', '');
+        // data, response) - the branch above relies on `status` being there.
+        const errorMessage = readErrorMessage(hook);
         if (errorMessage) {
           hook.error.message = errorMessage;
           throw hook.error;
