@@ -13,7 +13,7 @@ const ENV_TYPE = {
 };
 
 module.exports = function(env) {
-  const mode = env.mode || ENV_TYPE.PRODUCTION;
+  const mode = (env && env.mode) || ENV_TYPE.PRODUCTION;
   return {
     mode: mode,
     context: sourcePath,
@@ -23,30 +23,37 @@ module.exports = function(env) {
     output: {
       path: outPath,
       publicPath: '/',
-      filename: 'app.[hash].js',
+      filename: 'app.[contenthash].js',
+      clean: true,
     },
     devtool: 'source-map',
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.jsx'],
-      // Fix webpack's default behavior to not load packages with jsnext:main module
-      // https://github.com/Microsoft/TypeScript/issues/11677 
-      mainFields: ['main'],
+      // Prefer each package's browser build, but keep excluding the `module`
+      // (jsnext:main) field - https://github.com/Microsoft/TypeScript/issues/11677
+      mainFields: ['browser', 'main'],
       modules: [
         sourcePath,
         path.join(__dirname, 'node_modules')
-      ]
+      ],
+      // webpack 5 dropped the automatic Node core-module polyfills that the old
+      // `node: { fs: 'empty', net: 'empty' }` block used to configure.
+      fallback: {
+        fs: false,
+        net: false,
+      }
     },
     module: {
       rules: [
         {
           test: /\.tsx?$/,
           exclude: /(node_modules|ArachneUIComponents|@types)/gi,
-          loaders: ['ts-loader']
+          use: ['ts-loader']
         },
         {
           test: /\.jsx?$/,
           exclude: /(node_modules|ArachneUIComponents)/,
-          loaders: ['babel-loader']
+          use: ['babel-loader']
         },
         {
           test: /\.scss$/,
@@ -55,16 +62,30 @@ module.exports = function(env) {
               loader: "style-loader"
             },
             {
-              loader: "css-loader"
+              loader: "css-loader",
+              options: {
+                // Root-relative url(/fonts/...) references point at assets that
+                // CopyWebpackPlugin emits into dist/ and the server exposes at
+                // runtime, so leave them for the browser to resolve.
+                url: {
+                  filter: (url) => !url.startsWith('/'),
+                },
+              },
             },
             {
               loader: "sass-loader",
               options: {
-                includePaths: [
-                  sourcePath,
-                  path.join(__dirname, 'node_modules')
-                ],
-                data: "$isAppNode: false;"
+                sassOptions: {
+                  includePaths: [
+                    sourcePath,
+                    path.join(__dirname, 'node_modules')
+                  ],
+                  // Silence deprecations raised inside node_modules only - the
+                  // tootik package still uses @import internally and we cannot
+                  // fix it here. Deprecations in this app's own stylesheets are
+                  // still reported.
+                  quietDeps: true,
+                },
               },
             },
           ]
@@ -72,18 +93,18 @@ module.exports = function(env) {
       ]
     },
     devServer: {
-      contentBase: sourcePath,
+      static: {
+        directory: sourcePath,
+      },
       historyApiFallback: true,
       hot: true,
       port: 3000,
-      stats: {
-        warnings: false
-      },
-      proxy: {
-        '/api': 'http://localhost:3010',
-        '/auth/sso': 'http://localhost:3010',
-        '/auth/slo': 'http://localhost:3010',
-      }
+      proxy: [
+        {
+          context: ['/api', '/auth/sso', '/auth/slo'],
+          target: 'http://localhost:3010',
+        },
+      ],
     },
     plugins: [
       new HtmlWebpackPlugin({
@@ -92,29 +113,25 @@ module.exports = function(env) {
         template: 'index.html',
         favicon: 'favicon.ico',
       }),
-      new CopyWebpackPlugin([
-        {
-          from: path.join(__dirname, 'node_modules/arachne-ui-components/lib/resources/fonts'),
-          to: path.join(outPath, 'fonts')
-        },
-        {
-          from: path.join(__dirname, 'node_modules/arachne-ui-components/lib/resources/material-design-icons/iconfont'),
-          to: path.join(outPath, 'fonts')
-        },
-        {
-          from: path.join(__dirname, 'resources/icons'),
-          to: path.join(outPath, 'icons')
-        },
-      ]),
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: path.join(__dirname, 'node_modules/arachne-ui-components/lib/resources/fonts'),
+            to: path.join(outPath, 'fonts')
+          },
+          {
+            from: path.join(__dirname, 'node_modules/arachne-ui-components/lib/resources/material-design-icons/iconfont'),
+            to: path.join(outPath, 'fonts')
+          },
+          {
+            from: path.join(__dirname, 'resources/icons'),
+            to: path.join(outPath, 'icons')
+          },
+        ],
+      }),
       new webpack.DefinePlugin({
         __DEV__: mode === ENV_TYPE.DEV,
       }),
     ],
-    node: {
-      // workaround for webpack-dev-server issue 
-      // https://github.com/webpack/webpack-dev-server/issues/60#issuecomment-103411179
-      fs: 'empty',
-      net: 'empty'
-    }
   };
 }

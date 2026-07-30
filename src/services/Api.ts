@@ -20,7 +20,6 @@
  *
  */
 
-import * as authentication from 'feathers-authentication/client';
 import * as feathers from 'feathers/client';
 import * as hooks from 'feathers-hooks';
 import * as rest from 'feathers-rest-arachne/client';
@@ -59,7 +58,7 @@ function configure(props: ApiConfig): Promise<any> {
     .configure(hooks());
     //.configure(auth);
 
-  API.hooks({
+  API.hooks(<any>{
     before(hook) {
       const token = getAuthToken(authTokenName);
       if (token) {
@@ -81,7 +80,7 @@ function configure(props: ApiConfig): Promise<any> {
       if (hook.error.status === 401) {
         onAccessDenied();
       } else {
-        const validationErrors = get(hook, 'error.validatorErrors');
+        const validationErrors: any = get(hook, 'error.validatorErrors');
         if (validationErrors) {
           const errors = {
             _error: get(hook, 'error.errorMessage', ''),
@@ -89,11 +88,30 @@ function configure(props: ApiConfig): Promise<any> {
           Object.keys(validationErrors).forEach(reKey => set(errors, reKey, validationErrors[reKey]));
           throw new SubmissionError(errors);
         }
+        // Mirror the `after` hook for non-validation failures.
+        //
+        // The API historically answered *every* error with HTTP 200 and an `errorMessage`
+        // in the body, so the `after` hook above was the only place errors were turned
+        // into a readable message. As the backend moves to real status codes (SEC-09),
+        // that hook stops running and the message would otherwise be replaced by the bare
+        // HTTP status text — e.g. the licence explanation in the download modal becoming
+        // "Bad Request".
+        //
+        // This is deliberately backwards compatible: it changes nothing while the API
+        // still returns 200, so it can ship ahead of the backend change.
+        // Rewrite the message on the original error rather than throwing a new
+        // one, so callers keep the rest of the error contract (status, code,
+        // data, response) - the 401 branch above relies on `status` being there.
+        const errorMessage = get(hook, 'error.errorMessage', '');
+        if (errorMessage) {
+          hook.error.message = errorMessage;
+          throw hook.error;
+        }
       }
     }
   });
 
-  return new Promise((resolve) => {resolve();}); //API.authenticate({ strategy: 'token' }).catch(() => {}); // 
+  return new Promise<void>((resolve) => {resolve();}); //API.authenticate({ strategy: 'token' }).catch(() => {}); // 
 }
 
 const ohdsiApi = new OhdsiApi();
