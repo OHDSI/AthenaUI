@@ -23,7 +23,19 @@
 const authTokenName = 'Athena-Auth-Token';
 const loginPath = '/auth/login';
 
+/**
+ * Shared target name for the single sign-on popup.
+ *
+ * Login and logout must use the same name so the browser reuses one window. Opening logout
+ * under a different name leaves the login popup behind, still showing the identity provider,
+ * and the next sign-in reuses that stale window instead of starting a new request.
+ */
+const ssoWindowName = 'athena-sso';
+const ssoWindowFeatures = 'width=600,height=450,scrollbars=no';
+
 export {
 	authTokenName,
 	loginPath,
+	ssoWindowName,
+	ssoWindowFeatures,
 };

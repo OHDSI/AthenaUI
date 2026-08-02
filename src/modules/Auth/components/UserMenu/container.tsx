@@ -28,6 +28,7 @@ import coreActions from 'modules/Auth/actions/core';
 import logoutActions from 'modules/Auth/actions/logout';
 import principalActions from 'modules/Auth/actions/principal';
 import { roles } from 'modules/Auth/const';
+import { ssoWindowFeatures, ssoWindowName } from 'const';
 import presenter from './presenter';
 import {
   IUserMenuState,
@@ -85,7 +86,7 @@ const mapDispatchToProps = function(dispatch) {
         dispatch(goToPage('/'));
     },
     logoutSLO: (dispatch) => {
-      window.open('/auth/slo', 'SSO logout', "width=600,height=450,scrollbars=no");
+      window.open('/auth/slo', ssoWindowName, ssoWindowFeatures);
     }
   }
 };
