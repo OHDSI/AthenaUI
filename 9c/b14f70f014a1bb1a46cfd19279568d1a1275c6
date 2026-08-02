@@ -1,0 +1,25 @@
+src/const/index.ts
+  s_9a19fdc938be11::t_61c387ba58ca3f 26-35,39-40
+src/modules/Auth/components/UserMenu/container.tsx
+  s_9a19fdc938be11::t_3f3e20add05bfb 89
+  s_9a19fdc938be11::t_1edc5391bb5d7b 31
+src/modules/Auth/components/Login/container.ts
+  s_9a19fdc938be11::t_efab024af1bd53 28
+  s_9a19fdc938be11::t_58aa5c570d2fd8 79
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "9cb14f70f014a1bb1a46cfd19279568d1a1275c6",
+  "prompts": {},
+  "sessions": {
+    "s_9a19fdc938be11": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "97a88393-c53f-47f0-93e9-4932a20ec985",
+        "model": "claude-opus-5"
+      },
+      "human_author": "konstjar <iaroshovets@ohdsi.org>"
+    }
+  }
+}
