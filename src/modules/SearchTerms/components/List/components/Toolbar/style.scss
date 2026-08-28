@@ -20,7 +20,8 @@
  *
  */
 
-@import 'styles/vars-and-mixins.scss';
+@use 'sass:math';
+@use 'styles/vars-and-mixins' as *;
 
 .#{$namespace} {
 
@@ -81,7 +82,7 @@
 
     &__content {
       right: 0.8rem;
-      margin-top: $header-height / 2;
+      margin-top: math.div($header-height, 2);
       width: 80rem;
     }
 

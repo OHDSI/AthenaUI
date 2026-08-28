@@ -1,0 +1,8 @@
+{
+  // Use the TypeScript pinned in package.json (5.4.x) instead of the version
+  // bundled with VS Code. Without this the editor type-checks with a much newer
+  // compiler than `npm run build` uses, and reports TypeScript 7 deprecations
+  // (target=ES5, moduleResolution=node10, baseUrl) that do not apply here.
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true
+}

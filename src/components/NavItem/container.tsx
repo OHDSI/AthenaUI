@@ -68,4 +68,4 @@ export default connect<INavitemStateProps, INavitemDispatchProps, INavItem>(
   mapStateToProps,
   mapDispatchToProps,
   mergeProps
-)(NavItem);
+)(NavItem as any);

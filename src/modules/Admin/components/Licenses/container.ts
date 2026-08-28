@@ -129,4 +129,4 @@ export default connect<ILicensesStateProps, ILicensesDispatchProps, void>(
 	mapStateToProps,
 	mapDispatchToProps,
 	mergeProps
-)(FormLicenses);
+)(FormLicenses as any);

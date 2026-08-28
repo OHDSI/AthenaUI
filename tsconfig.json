@@ -6,8 +6,10 @@
     "baseUrl": "src",
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": false,
+    "skipLibCheck": true,
     "sourceMap": true,
     "outDir": "ts-build",
+    "rootDir": "src",
     "jsx": "react",
     "types": [
       "react",

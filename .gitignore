@@ -4,5 +4,5 @@ node_modules
 ts-build
 dist
 .idea/
-node_modules/
-target/
+CLAUDE.md
+Athena.code-workspace
