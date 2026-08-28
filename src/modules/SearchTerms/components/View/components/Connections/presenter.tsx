@@ -23,7 +23,6 @@
 import * as React from 'react';
 import * as d3 from 'd3-force';
 import * as d3select from 'd3-selection';
-import { event } from 'd3-selection';
 import * as d3drag from 'd3-drag';
 import BEMHelper from 'services/BemHelper';
 import * as d3zoom from 'd3-zoom';
@@ -127,12 +126,12 @@ function diagonal(startPoint: Point, endPoint: Point, isDirectedBack: boolean) {
   return path;
 }
 
-function dragstarted(canvas: ICanvas) {
+function dragstarted(canvas: ICanvas, event: any) {
   canvas.initialX = event.x;
   canvas.initialY = event.y;
 }
 
-function dragged(canvas: ICanvas) {
+function dragged(canvas: ICanvas, event: any) {
   const diffX = event.x - canvas.initialX;
   const diffY = event.y - canvas.initialY;
   const x = canvas.fixedX + diffX;
@@ -155,7 +154,7 @@ function dragended(canvas: ICanvas) {
   canvas.fixedY = canvas.tempY || 0;
 }
 
-function zoomed(canvas: ICanvas) {
+function zoomed(canvas: ICanvas, event: any) {
   setZoom(canvas, event.transform.k);
 }
 

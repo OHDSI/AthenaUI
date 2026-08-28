@@ -20,8 +20,19 @@
  *
  */
 
-@import 'arachne-ui-components/lib/styles/components';
-@import 'arachne-ui-components/lib/styles/app.scss';
+// arachne is loaded UNCONFIGURED here on purpose. app.scss emits arachne's own
+// stylesheets (the tooltip among them), and those must keep arachne's 'ac-'
+// prefix because that is what its React components render. Only this app's own
+// rules below use the 'at-' prefix.
+//
+// Component stylesheets are a different story: they pull in arachne mixins such
+// as form() and tabbed-modal() and need those emitted as .at-*, so they load
+// styles/vars-and-mixins, which rebinds $namespace. webpack compiles every .scss
+// as its own Sass unit, so the two configurations never meet - which is exactly
+// how the previous @import ordering behaved.
+@use 'arachne-ui-components/lib/styles/components';
+@use 'arachne-ui-components/lib/styles/app';
+@use 'arachne-ui-components/lib/styles/vars-and-mixins' as arachne;
 
 $namespace: 'at-';
 
@@ -33,7 +44,7 @@ $namespace: 'at-';
 
     &__main {
       display: flex;
-      min-height: calc(100% - #{$header-height});
+      min-height: calc(100% - #{arachne.$header-height});
       flex-grow: 1;
     }
 
@@ -43,7 +54,7 @@ $namespace: 'at-';
     }
 
     &__header {
-      background: $green;
+      background: arachne.$green;
       min-height: 56px;
 
       &--empty {

@@ -20,33 +20,38 @@
  *
  */
 
-/**
- * All app's variables and mixins for @import by components
- */
+// All of this app's variables and mixins, for `@use 'styles/vars-and-mixins' as *`
+// by components.
+//
+// arachne-ui-components is re-forwarded with $namespace rebound to this app's
+// 'at-' prefix. That matters beyond plain variable access: arachne mixins such
+// as form() and tabbed-modal() interpolate $namespace to build nested
+// selectors, so rebinding it makes them emit .at-* to match this app's markup.
+// The old @import model achieved the same thing implicitly through the shared
+// global scope.
 
-@import 'arachne-ui-components/lib/styles/vars-and-mixins.scss';
-
-$namespace: 'at-';
+@forward 'arachne-ui-components/lib/styles/vars-and-mixins' with ($namespace: 'at-');
+@use 'arachne-ui-components/lib/styles/vars-and-mixins' as arachne;
 
 @mixin facet-badge() {
   &--domain {
-    background-color: $red;
+    background-color: arachne.$red;
   }
   &--standardConcept {
-    background-color: $blue;
+    background-color: arachne.$blue;
   }
   &--conceptClass {
-    background-color: $violet-light;
+    background-color: arachne.$violet-light;
   }
   &--vocabulary {
-    background-color: $orange;
+    background-color: arachne.$orange;
   }
   &--invalidReason {
-    background-color: $purple-darker;
+    background-color: arachne.$purple-darker;
   }
 
   &--purple {
-    background-color: $purple;
+    background-color: arachne.$purple;
   }
 }
 
@@ -60,11 +65,11 @@ $namespace: 'at-';
   &__content {
     overflow: visible;
     position: absolute;
-    z-index: $z-notify-dropdown-window;
+    z-index: arachne.$z-notify-dropdown-window;
   }
 
   &__content:before {
-    background: $black;
+    background: arachne.$black;
     content: "";
     display: block;
     height: 2rem;

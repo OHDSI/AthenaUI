@@ -25,6 +25,7 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import * as get from 'lodash/get';
 import login from 'modules/Auth/actions/login';
+import { ssoWindowFeatures, ssoWindowName } from 'const';
 import presenter from './presenter';
 
 interface ILoginStateProps {
@@ -75,7 +76,7 @@ const mapDispatchToProps = function(dispatch) {
 	return {
     goToSSO: function(backUrl) {
       window.addEventListener('message', handleLoginResult.bind(null, backUrl));
-  		window.open('/auth/sso', 'SSO login', "width=600,height=450,scrollbars=no");
+  		window.open('/auth/sso', ssoWindowName, ssoWindowFeatures);
     },
   }
 };

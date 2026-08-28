@@ -65,4 +65,4 @@ const mapDispatchToProps = {
 export default connect<IListStateProps, IListDispatchProps, void>(
   mapStateToProps,
   mapDispatchToProps
-)(VocabsList);
+)(VocabsList as any);
