@@ -20,7 +20,7 @@
     "@types/keymirror": "0.1.1",
     "@types/lodash": "4.14.54",
     "@types/superagent": "2.0.36",
-    "arachne-ui-components": "1.21.0",
+    "arachne-ui-components": "^1.21.1",
     "classnames": "2.5.1",
     "core-js": "2.6.12",
     "d3-drag": "^3.0.0",
