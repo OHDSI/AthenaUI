@@ -1,0 +1,16 @@
+package.json
+  h_7f60897e49550e 23
+package-lock.json
+  h_7f60897e49550e 2-3,8-9,19,3415-3417,4842-4844,6305-6307
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "3e5aaa5b0580560370e557844f6932a5fadf90c5",
+  "prompts": {},
+  "humans": {
+    "h_7f60897e49550e": {
+      "author": "konstjar <iaroshovets@ohdsi.org>"
+    }
+  }
+}
