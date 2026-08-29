@@ -116,7 +116,10 @@ function configure(props: ApiConfig): Promise<any> {
         onAccessDenied();
       } else {
         const validationErrors: any = get(hook, 'error.validatorErrors');
-        if (validationErrors) {
+        // JsonResult always serializes validatorErrors, including as an empty object for
+        // non-field validation failures. Only turn it into a redux-form SubmissionError
+        // when the backend actually supplied field errors; otherwise preserve errorMessage.
+        if (validationErrors && Object.keys(validationErrors).length > 0) {
           const errors = {
             _error: get(hook, 'error.errorMessage', ''),
           };

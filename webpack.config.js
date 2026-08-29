@@ -141,6 +141,10 @@ module.exports = function(env) {
             from: path.join(__dirname, 'resources/icons'),
             to: path.join(outPath, 'icons')
           },
+          {
+            from: path.join(sourcePath, 'robots.txt'),
+            to: path.join(outPath, 'robots.txt')
+          },
         ],
       }),
       new webpack.DefinePlugin({
