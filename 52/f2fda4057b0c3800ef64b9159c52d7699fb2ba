@@ -1,0 +1,14 @@
+package.json
+  h_7f60897e49550e 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "52f2fda4057b0c3800ef64b9159c52d7699fb2ba",
+  "prompts": {},
+  "humans": {
+    "h_7f60897e49550e": {
+      "author": "konstjar <iaroshovets@ohdsi.org>"
+    }
+  }
+}
