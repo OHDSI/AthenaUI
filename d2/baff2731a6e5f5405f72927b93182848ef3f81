@@ -1,0 +1,62 @@
+src/modules/Admin/components/Licenses/container.ts
+  s_77ea3cbefbd88b::t_bb2ac4a9520c33 41,46,65,92,100-101,106,113
+src/modules/Admin/components/Licenses/components/ModalEditPermissions/container.ts
+  s_77ea3cbefbd88b::t_309ed8338a7b8f 46,52,64,84,86,110,115-122
+  s_77ea3cbefbd88b::t_13270a4df0d682 48
+  s_77ea3cbefbd88b::t_54ca5b35ddb3e5 123
+src/modules/Admin/components/Licenses/components/ModalEditPermissions/style.scss
+  s_77ea3cbefbd88b::t_309ed8338a7b8f 29,31,52-79,95-118
+  s_77ea3cbefbd88b::t_285b56e561168d 33-34
+src/modules/Admin/components/Licenses/components/ModalEditPermissions/presenter.tsx
+  s_77ea3cbefbd88b::t_309ed8338a7b8f 33-34,48-72,81,89-101,109,112,115,117-119,134,136,145
+  s_77ea3cbefbd88b::t_6839940bf4267f 135
+src/modules/Admin/reducers/index.ts
+  s_77ea3cbefbd88b::t_bb2ac4a9520c33 35-36
+src/modules/Admin/components/Licenses/components/LicensesList/container.ts
+  s_77ea3cbefbd88b::t_6a4e0af7ad0c2d 77
+  s_77ea3cbefbd88b::t_6839940bf4267f 40,64,87
+src/modules/Admin/components/Licenses/components/LicensesList/presenter.tsx
+  s_77ea3cbefbd88b::t_bb2ac4a9520c33 32-33,63-66,97-100
+  s_77ea3cbefbd88b::t_d808c7cb40bd3c 101
+src/modules/Admin/components/Licenses/types.ts
+  s_77ea3cbefbd88b::t_bb2ac4a9520c33 26-32,39-41,54,62
+src/modules/Admin/components/Licenses/components/ModalAddPermission/container.ts
+  s_77ea3cbefbd88b::t_6839940bf4267f 48,87,102
+src/modules/Admin/apiServices.ts
+  s_77ea3cbefbd88b::t_bb2ac4a9520c33 29-30,41-42,47
+src/modules/Admin/components/Licenses/presenter.tsx
+  s_77ea3cbefbd88b::t_bb2ac4a9520c33 49,53,71,91
+src/modules/Admin/actions/licenses.ts
+  s_77ea3cbefbd88b::t_bb2ac4a9520c33 52-55,60-63,80,84
+src/modules/Admin/components/Licenses/components/LicensesList/style.scss
+  s_77ea3cbefbd88b::t_bb2ac4a9520c33 33,37-41,45
+src/modules/Admin/components/Licenses/components/LicensesList/selectors.ts
+  s_77ea3cbefbd88b::t_bb2ac4a9520c33 40
+  s_77ea3cbefbd88b::t_0506c1a3db7a1d 38
+src/modules/Admin/components/Licenses/style.scss
+  s_77ea3cbefbd88b::t_bb2ac4a9520c33 39-43,61
+src/modules/Admin/components/Licenses/components/ModalEditPermissions/selectors.ts
+  s_77ea3cbefbd88b::t_285b56e561168d 29-31,36,48
+  s_77ea3cbefbd88b::t_309ed8338a7b8f 40-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "d2baff2731a6e5f5405f72927b93182848ef3f81",
+  "prompts": {},
+  "humans": {
+    "h_7f60897e49550e": {
+      "author": "konstjar <iaroshovets@ohdsi.org>"
+    }
+  },
+  "sessions": {
+    "s_77ea3cbefbd88b": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a048c9-e99a-7271-9a9a-62025a34851a",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "konstjar <iaroshovets@ohdsi.org>"
+    }
+  }
+}
