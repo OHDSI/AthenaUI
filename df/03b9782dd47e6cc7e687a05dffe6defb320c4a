@@ -1,0 +1,39 @@
+src/modules/Admin/components/Licenses/components/ModalAddPermission/container.ts
+  s_77ea3cbefbd88b::t_665ec32bf2696c 86
+src/modules/Admin/actions/licenses.ts
+  s_77ea3cbefbd88b::t_665ec32bf2696c 26,28,53-67,101
+src/modules/Admin/components/Licenses/presenter.tsx
+  s_77ea3cbefbd88b::t_67ec35690d7073 98
+src/modules/Admin/components/Licenses/components/ModalEditPermissions/container.ts
+  s_77ea3cbefbd88b::t_665ec32bf2696c 83
+src/modules/Admin/components/Licenses/components/ModalEditPermissions/presenter.tsx
+  s_77ea3cbefbd88b::t_ae83c1b32f21d9 108,112
+src/modules/Admin/components/Licenses/components/LicensesList/container.ts
+  s_77ea3cbefbd88b::t_67ec35690d7073 44,94
+  s_77ea3cbefbd88b::t_665ec32bf2696c 64
+src/modules/Admin/components/Licenses/components/ModalEditPermissions/style.scss
+  s_77ea3cbefbd88b::t_ae83c1b32f21d9 31-32,34,41-52,56-58,62-64,68-70,74-79,94-96,100,134-136,140
+src/modules/Admin/components/Licenses/components/LicensesList/presenter.tsx
+  s_77ea3cbefbd88b::t_67ec35690d7073 43,45-48,51,75,83,105,118
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "df03b9782dd47e6cc7e687a05dffe6defb320c4a",
+  "prompts": {},
+  "humans": {
+    "h_7f60897e49550e": {
+      "author": "konstjar <iaroshovets@ohdsi.org>"
+    }
+  },
+  "sessions": {
+    "s_77ea3cbefbd88b": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a048c9-e99a-7271-9a9a-62025a34851a",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "konstjar <iaroshovets@ohdsi.org>"
+    }
+  }
+}
