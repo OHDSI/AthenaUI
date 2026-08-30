@@ -1,0 +1,26 @@
+src/modules/SearchTerms/components/View/container.tsx
+  s_77ea3cbefbd88b::t_62cebdd50d2ff5 109
+src/modules/SearchTerms/routes.tsx
+  s_77ea3cbefbd88b::t_62cebdd50d2ff5 27-33,54,59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "a8598e20b38a310370d3581a5577c6748556d0a8",
+  "prompts": {},
+  "humans": {
+    "h_7f60897e49550e": {
+      "author": "konstjar <iaroshovets@ohdsi.org>"
+    }
+  },
+  "sessions": {
+    "s_77ea3cbefbd88b": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a048c9-e99a-7271-9a9a-62025a34851a",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "konstjar <iaroshovets@ohdsi.org>"
+    }
+  }
+}
