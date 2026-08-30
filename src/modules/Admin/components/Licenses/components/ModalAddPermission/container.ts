@@ -45,6 +45,7 @@ interface IModalDispatchProps {
 	create: (user: number, vocabulary: VocabularyOption) => (dispatch: Function) => any;
 	resetForm: () => (dispatch: Function) => any;
 	loadLicenses: () => (dispatch: Function) => any;
+	loadPendingCount: () => (dispatch: Function) => any;
 };
 interface IModalProps extends IModalStateProps, IModalDispatchProps {
   doSubmit: (vocabs: Array<VocabularyOption>) => Promise<any>;
@@ -83,6 +84,7 @@ const mapDispatchToProps = {
 	create: actions.licenses.create,
 	resetForm: () => reset(forms.addPermission),
 	loadLicenses: actions.licenses.load,
+	loadPendingCount: actions.licenses.loadPendingCount,
 };
 
 
@@ -97,6 +99,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
 				.then(() => dispatchProps.close())
 				.then(() => dispatchProps.resetForm())
 				.then(() => dispatchProps.loadLicenses())
+				.then(() => dispatchProps.loadPendingCount())
 				.catch(() => {});
 
 			return promise;

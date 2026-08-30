@@ -29,6 +29,8 @@ import {
   Link,
 } from 'arachne-ui-components';
 import { License, Vocabulary } from 'modules/Admin/components/Licenses/types';
+import * as moment from 'moment';
+import { fullDateFormat } from 'const/formats';
 
 require('./style.scss');
 
@@ -56,6 +58,10 @@ function CellEmail(props: any) {
   >
     {props.value}
   </Link>;
+}
+
+function CellDate(props: any) {
+  return <span>{props.value ? moment(props.value).format(fullDateFormat) : 'Unknown'}</span>;
 }
 
 interface IListProps {
@@ -87,6 +93,11 @@ function Results(props: IListProps) {
           {...classes('email')}
           header='Email'
           field='user.email'
+        />
+        <CellDate
+          {...classes('date')}
+          header='Latest activity'
+          field='latestActivityDate'
         />
         <CellVocabs
           {...classes('voc')}

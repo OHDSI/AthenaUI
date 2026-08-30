@@ -49,8 +49,16 @@ function load(page: number, pageSize: number, queryUser?: string, pendingOnly?: 
   });
 }
 
+function loadPendingCount() {
+	return services.licensePendingCount.find();
+}
+
 function remove(vocabId: number) {
 	return services.licenses.remove(vocabId);
+}
+
+function cancelRequest(licenseId: number) {
+	return services.licenseRequests.remove(licenseId);
 }
 
 function create(userId: number, vocabularyV4Ids: Array<number>) {
@@ -69,9 +77,11 @@ function resolve(id: number, accepted: boolean) {
 
 export default {
   create,
+  cancelRequest,
   getUsers,
   getAvailableVocabularies,
   load,
+  loadPendingCount,
   remove,
   resolve,
 };

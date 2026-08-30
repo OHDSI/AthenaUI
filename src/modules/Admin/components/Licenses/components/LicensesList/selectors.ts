@@ -35,8 +35,9 @@ const getLicenses = createSelector(
       		name: [license.user.firstName, license.user.middleName, license.user.lastName].filter(n => n).join(' '),
           email: license.user.email,
         },
-      	vocabularies: license.vocabularyDTOs,
+        vocabularies: license.vocabularyDTOs,
         pendingCount: license.vocabularyDTOs.filter(voc => voc.status === licenseStatuses.PENDING).length,
+        latestActivityDate: license.latestActivityDate,
     })),
   );
 

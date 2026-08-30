@@ -24,14 +24,14 @@ import * as React from 'react';
 import BEMHelper from 'services/BemHelper';
 import {
 	Modal,
-	FormCheckboxList,
-	Form,
   TabbedPane,
   RadioButton,
   Button,
 } from 'arachne-ui-components';
 import { Vocabulary } from 'modules/Admin/components/Licenses/types';
 import { Field } from 'redux-form';
+import * as moment from 'moment';
+import { fullDateFormat } from 'const/formats';
 
 require('./style.scss');
 
@@ -45,6 +45,31 @@ function VocRadioButton ({ options, input }) {
   />;
 }
 
+function GrantedPermission({ input, option }) {
+  const selected = input.value || [];
+  const value = option.value.toString();
+  const checked = selected.indexOf(value) >= 0;
+
+  return <div {...BEMHelper('granted-permission')()}>
+    <input
+      type='checkbox'
+      checked={checked}
+      onChange={() => input.onChange(checked
+        ? selected.filter(item => item !== value)
+        : selected.concat(value))}
+    />
+    <span {...BEMHelper('granted-permission')('name')}>{option.label}</span>
+    <span {...BEMHelper('granted-permission')('date')}>
+      {option.grantedAt ? moment(option.grantedAt).format(fullDateFormat) : 'Unknown'}
+    </span>
+    <span {...BEMHelper('granted-permission')('grantor')}>
+      {option.grantedBy
+        ? `#${option.grantedBy.id} - ${option.grantedBy.name}`
+        : 'Unknown (legacy record)'}
+    </span>
+  </div>;
+}
+
 function ModalEditPermissions(props) {
   const {
     modal,
@@ -53,6 +78,7 @@ function ModalEditPermissions(props) {
     doSubmit,
     pendingVocabularies,
     handleSubmit,
+    cancelPendingRequest,
   } = props;
   const classes = BEMHelper('edit-permissions');
 
@@ -60,7 +86,19 @@ function ModalEditPermissions(props) {
     {
       label: `Granted (${vocabularies.length})`,
       content: <div {...classes('tab-content')}>
-        <Field component={FormCheckboxList} options={vocabularies} name='vocabularies' />
+        <div {...classes('granted-header')}>
+          <span {...classes('granted-name')}>Vocabulary</span>
+          <span {...classes('granted-date')}>Granted at</span>
+          <span {...classes('granted-by')}>Granted by</span>
+        </div>
+        {vocabularies.map(vocabulary =>
+          <Field
+            key={vocabulary.value}
+            component={GrantedPermission}
+            name='vocabularies'
+            option={vocabulary}
+          />
+        )}
       </div>,
     },
     {
@@ -68,12 +106,17 @@ function ModalEditPermissions(props) {
       content: <div {...classes('tab-content')}>
         <div {...classes('pending-voc')}>
           <span {...classes('pending-voc-name')}></span>
+          <div {...classes('pending-date')}>Requested at</div>
           <div {...classes('pending-button')}>Allow</div>
           <div {...classes('pending-button')}>Forbid</div>
+          <div {...classes('pending-cancel')}></div>
         </div>
         {pendingVocabularies.map((voc: Vocabulary) =>
-          <div {...classes('pending-voc')}>
+          <div {...classes('pending-voc')} key={voc.licenseId}>
             <span {...classes('pending-voc-name')}>{voc.name}</span>
+            <div {...classes('pending-date')}>
+              {voc.requestDate ? moment(voc.requestDate).format(fullDateFormat) : 'Unknown'}
+            </div>
             <div {...classes('pending-button')}>
               <Field
                 component={VocRadioButton}
@@ -88,6 +131,9 @@ function ModalEditPermissions(props) {
                 options={{ value: false }}
               />
             </div>
+            <div {...classes('pending-cancel')}>
+              <Button type='button' onClick={() => cancelPendingRequest(voc)}>Cancel request</Button>
+            </div>
           </div>
         )}
       </div>
@@ -96,7 +142,7 @@ function ModalEditPermissions(props) {
 
   return (
     <div {...classes()}>
-      <Modal modal={modal} title={`Edit permissions for user ${user}`} mods={['no-padding']}>
+      <Modal modal={modal} title={`Edit permissions for ${user.name} (#${user.id})`} mods={['no-padding']}>
         <form
           onSubmit={handleSubmit(doSubmit)}
           {...props}

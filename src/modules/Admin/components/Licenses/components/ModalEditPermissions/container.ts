@@ -43,10 +43,13 @@ interface IModalDispatchProps {
   close: () => (dispatch: Function) => any;
   remove: (id: string) => (dispatch: Function) => any;
   loadLicenses: () => (dispatch: Function) => any;
+  loadPendingCount: () => (dispatch: Function) => any;
   resolveLicense: (id: number, allow: boolean) => (dispatch: Function) => any;
+  cancelRequest: (id: number) => any;
 };
 interface IModalProps extends IModalStateProps, IModalDispatchProps {
   doSubmit: (vocabs: Array<VocabularyOption>) => Promise<any>;
+  cancelPendingRequest: (vocabulary: Vocabulary) => Promise<any>;
 };
 
 class ModalEditPermissions extends Component<IModalProps, {}> {
@@ -58,7 +61,7 @@ class ModalEditPermissions extends Component<IModalProps, {}> {
 function mapStateToProps(state: any): IModalStateProps {
   const vocabularies = selectors.getVocabularies(state);
   const pendingVocabularies = selectors.getPendingVocabularies(state);
-  const user = get(state, 'modal.editPermission.data.user.name', {
+  const user = get(state, 'modal.editPermission.data.user', {
     id: -1,
     name: 'Anonymous',
     email: '',
@@ -78,7 +81,9 @@ const mapDispatchToProps = {
   close: () => ModalUtils.actions.toggle(modal.editPermission, false),
   remove: actions.licenses.remove,
   loadLicenses: actions.licenses.load,
+  loadPendingCount: actions.licenses.loadPendingCount,
   resolveLicense: actions.licenses.resolve,
+  cancelRequest: actions.licenses.cancelRequest,
 };
 
 function mergeProps(
@@ -102,9 +107,19 @@ function mergeProps(
       promise
         .then(() => dispatchProps.close())
         .then(() => dispatchProps.loadLicenses())
+        .then(() => dispatchProps.loadPendingCount())
         .catch(() => {});
 
       return promise;
+    },
+    cancelPendingRequest: (vocabulary: Vocabulary) => {
+      if (!confirm(`Cancel the ${vocabulary.name} license request without notifying the user?`)) {
+        return Promise.resolve();
+      }
+      return dispatchProps.cancelRequest(vocabulary.licenseId)
+        .then(() => dispatchProps.close())
+        .then(() => dispatchProps.loadLicenses())
+        .then(() => dispatchProps.loadPendingCount());
     },
   };
 }

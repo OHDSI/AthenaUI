@@ -37,6 +37,7 @@ interface IListDispatchProps {
 	openEditModal: (data: Object) => (dispatch: Function) => any;
 	remove: (id: number) => (dispatch: Function) => any;
 	loadLicenses: () => (dispatch: Function) => any;
+	loadPendingCount: () => (dispatch: Function) => any;
 	removeAll: (license: License) => void;
 };
 interface IListProps extends IListStateProps, IListDispatchProps {
@@ -60,6 +61,7 @@ const mapDispatchToProps = {
 	openEditModal: data => ModalUtils.actions.toggle(modal.editPermission, true, data),
   remove: actions.licenses.remove,
   loadLicenses: actions.licenses.load,
+  loadPendingCount: actions.licenses.loadPendingCount,
 };
 
 function mergeProps(
@@ -72,7 +74,7 @@ function mergeProps(
     ...ownProps,
     ...dispatchProps,
     removeAll: ({ user, vocabularies }) => {
-    	if (!confirm(`Remove all permissions for ${user.name}?`)) {
+      if (!confirm(`Remove all granted permissions and cancel all pending requests for ${user.name}?`)) {
     		return;
     	}
       const promises = [];
@@ -82,6 +84,7 @@ function mergeProps(
       const promise = Promise.all(promises);
       promise
         .then(() => dispatchProps.loadLicenses())
+        .then(() => dispatchProps.loadPendingCount())
         .catch(() => {});
     },
   };

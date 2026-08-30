@@ -26,10 +26,12 @@
   &edit-permissions {
   	@include tabbed-modal();
 
-    &__tab-content {
+	  &__tab-content {
 	    padding: 2rem;
-	    min-width: 500px;
+	    min-width: 760px;
 	    min-height: 200px;
+	    max-height: 65vh;
+	    overflow-y: auto;
 	  }
 
     &__pending-voc {
@@ -47,6 +49,34 @@
     	width: 6rem;
     }
 
+    &__pending-date {
+      width: 13rem;
+    }
+
+    &__pending-cancel {
+      width: 10rem;
+      text-align: right;
+    }
+
+    &__granted-header {
+      @include title();
+      display: flex;
+      padding: 0.5rem 0 0.75rem 2rem;
+      border-bottom: 1px solid $grey;
+    }
+
+    &__granted-name {
+      flex: 1;
+    }
+
+    &__granted-date {
+      width: 13rem;
+    }
+
+    &__granted-by {
+      width: 16rem;
+    }
+
     &__submit-button-wrapper {
     	padding: 1rem 2rem;
     }
@@ -61,5 +91,28 @@
 		  	margin: auto;
 		  }
 		}
+  }
+
+  &granted-permission {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid $grey-light;
+
+    & input {
+      margin-right: 1rem;
+    }
+
+    &__name {
+      flex: 1;
+    }
+
+    &__date {
+      width: 13rem;
+    }
+
+    &__grantor {
+      width: 16rem;
+    }
   }
 }

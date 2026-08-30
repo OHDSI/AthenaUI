@@ -46,10 +46,11 @@ interface ILicensesProps {
   page: number;
   pages: number;
   path: string;
+  pendingCount: number;
 };
 
 function Licenses(props: ILicensesProps) {
-  const { isLoading, openModal, pendingOnly, filter, page, pages, path } = props;
+  const { isLoading, openModal, pendingOnly, filter, page, pages, path, pendingCount } = props;
   const classes = BEMHelper('licenses');
   const options = [
     {
@@ -67,7 +68,7 @@ function Licenses(props: ILicensesProps) {
       InputComponent: {
         component: FormInput,
         props: {
-          placeholder: 'Filter by name',
+          placeholder: 'Filter by name or email',
         },
       },
     }
@@ -87,6 +88,7 @@ function Licenses(props: ILicensesProps) {
             onChange={(val) => filter(val)}
             value={pendingOnly}
           />
+          <div {...classes('pending-total')}>Pending requests: {pendingCount}</div>
           <Button {...classes('add-button')} onClick={openModal} mods={['submit', 'rounded']}>
             Add permission
           </Button>
@@ -106,4 +108,3 @@ function Licenses(props: ILicensesProps) {
 }
 
 export default Licenses;
-
