@@ -36,6 +36,14 @@ function restore(id: number) {
 	return services.restore.update(id, {});
 }
 
+function checkRestoreAvailability(id: number) {
+  return (dispatch: Function) => ohdsiApi.doGet(apiPaths.restoreAvailability(id));
+}
+
+function regenerateCurrent(id: number) {
+  return (dispatch: Function) => ohdsiApi.doPost(apiPaths.regenerateCurrent(id), {});
+}
+
 function share(values: string, id: number) {
   return (dispatch: Function) => {
     return ohdsiApi.doPost(apiPaths.share(id), values);
@@ -46,5 +54,7 @@ export default {
   load,
   remove,
   restore,
+  checkRestoreAvailability,
+  regenerateCurrent,
   share,
 };

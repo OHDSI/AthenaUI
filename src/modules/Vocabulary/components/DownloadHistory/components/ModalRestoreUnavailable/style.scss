@@ -1,0 +1,30 @@
+@use 'styles/vars-and-mixins' as *;
+
+.#{$namespace} {
+  &modal-restore-unavailable {
+    &__message,
+    &__note {
+      width: 540px;
+      line-height: 1.5;
+    }
+
+    &__note {
+      font-weight: 600;
+    }
+
+    &__error {
+      color: $red;
+      width: 540px;
+    }
+
+    &__actions {
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 1rem;
+
+      > * + * {
+        margin-left: 1rem;
+      }
+    }
+  }
+}

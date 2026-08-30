@@ -39,6 +39,7 @@ import { fullDateFormat } from 'const/formats';
 import ModalEditNotifications from './components/ModalEditNotifications';
 import ModalRequestLicenses from './components/ModalRequestLicenses';
 import ModalShare from './components/ModalShare';
+import ModalRestoreUnavailable from './components/ModalRestoreUnavailable';
 
 require('./style.scss');
 
@@ -79,16 +80,18 @@ interface IDownloadHistoryDispatchProps {
   load: () => (dispatch: Function) => any;
   remove: (id: number) => Promise<void>;
   restore: (id: number) => Promise<void>;
+  checkRestoreAvailability: (id: number) => Promise<any>;
   share: (id: number) => Promise<void>;
   showNotifications: Function;
   checkAvailability: Function;
   showRequestModal: Function;
+  showRestoreUnavailableModal: Function;
   showShareModal: Function;
 };
 
 interface IDownloadHistoryProps extends IDownloadHistoryStateProps, IDownloadHistoryDispatchProps {
   removeBundle: (id: number) => any;
-  restoreBundle: (id: number) => any;
+  restoreBundle: (bundle: IDownloadRequest) => any;
   download: (bundle: IDownloadRequest) => any;
 };
 
@@ -166,9 +169,9 @@ function BundleTitle({ bundle, removeBundle, toggle, isExpanded, restore, downlo
            <Button
              {...classes('restore-button')}
              mods={['success', 'rounded']}
-             onClick={() => restore(bundle.id)}
+             onClick={() => restore(bundle)}
            >
-             Restore
+             Regenerate
            </Button>
          }
        </div>
@@ -253,6 +256,7 @@ function VocabsList(props: IDownloadHistoryProps & IDownloadHistoryStatefulProps
       <ModalEditNotifications />
       <ModalRequestLicenses />
       <ModalShare />
+      <ModalRestoreUnavailable />
     </div>
   );
 }
