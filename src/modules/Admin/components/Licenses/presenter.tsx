@@ -95,7 +95,7 @@ function Licenses(props: ILicensesProps) {
         </Toolbar>
       </div>
       <div {...classes('table')}>
-        <LicensesList />
+        <LicensesList pendingOnly={pendingOnly} />
       </div>
       <div {...classes('pagination')}>
         <Pagination currentPage={page} pages={pages} path={path} />

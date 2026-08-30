@@ -80,7 +80,7 @@ function mapStateToProps(state: any): IModalStateProps {
 const mapDispatchToProps = {
   close: () => ModalUtils.actions.toggle(modal.editPermission, false),
   remove: actions.licenses.remove,
-  loadLicenses: actions.licenses.load,
+  loadLicenses: actions.licenses.reloadCurrentPage,
   loadPendingCount: actions.licenses.loadPendingCount,
   resolveLicense: actions.licenses.resolve,
   cancelRequest: actions.licenses.cancelRequest,

@@ -40,11 +40,15 @@ function CellRemove(props: any) {
 }
 
 function CellVocabs(props: any) {
-  const { value, openEditModal } = props;
+  const { value, openEditModal, pendingOnly } = props;
   const classes = BEMHelper('licenses-list');
+
+  const label = pendingOnly
+    ? `${value.pendingCount} pending ${value.pendingCount === 1 ? 'request' : 'requests'}`
+    : `${value.count} vocabularies`;
   
   return <Link onClick={openEditModal}>
-    {`${value.count} vocabularies`} {value.pendingCount > 0
+    {label} {!pendingOnly && value.pendingCount > 0
       ? <span {...classes('pending')}>({value.pendingCount} pending)</span>
       : ''
     }
@@ -68,6 +72,7 @@ interface IListProps {
   licenses: Array<License>;
   openEditModal: Function;
   removeAll: Function;
+  pendingOnly: boolean;
 };
 
 function Results(props: IListProps) {
@@ -75,6 +80,7 @@ function Results(props: IListProps) {
     licenses,
     openEditModal,
     removeAll,
+    pendingOnly,
   } = props;
   const classes = BEMHelper('licenses-list');
 
@@ -96,7 +102,7 @@ function Results(props: IListProps) {
         />
         <CellDate
           {...classes('date')}
-          header='Latest activity'
+          header={pendingOnly ? 'Requested at' : 'Latest activity'}
           field='latestActivityDate'
         />
         <CellVocabs
@@ -109,6 +115,7 @@ function Results(props: IListProps) {
               pendingCount: entity.pendingCount,
             },
             openEditModal: () => openEditModal(entity),
+            pendingOnly,
           })}
         />
         <CellRemove

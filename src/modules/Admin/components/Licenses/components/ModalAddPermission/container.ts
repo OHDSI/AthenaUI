@@ -83,7 +83,7 @@ const mapDispatchToProps = {
 	getVocabularies: actions.licenses.getAvailableVocabularies,
 	create: actions.licenses.create,
 	resetForm: () => reset(forms.addPermission),
-	loadLicenses: actions.licenses.load,
+	loadLicenses: actions.licenses.reloadCurrentPage,
 	loadPendingCount: actions.licenses.loadPendingCount,
 };
 

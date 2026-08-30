@@ -23,8 +23,9 @@
 import API from 'services/Api';
 import services from '../apiServices';
 
-import { actionTypes } from 'modules/Admin/const';
+import { actionTypes, pageSize, paths } from 'modules/Admin/const';
 import { IAppAction } from 'actions';
+import { get } from 'lodash';
 
 function getUsers(params: { query: string }) {
 	return services.users.find({ query: params });
@@ -47,6 +48,21 @@ function load(page: number, pageSize: number, queryUser?: string, pendingOnly?: 
   		pendingOnly,
   	}
   });
+}
+
+function reloadCurrentPage() {
+	return (dispatch, getState) => {
+		const state = getState();
+		const currentPage = parseInt(
+			get(state, 'routing.locationBeforeTransitions.query.page', '1'),
+			10,
+		) || 1;
+		const queryUser = get(state, 'form.licenseFilter.values.username', '');
+		const pathname = get(state, 'routing.locationBeforeTransitions.pathname', '');
+		const pendingOnly = pathname === paths.licenses(true);
+
+		return dispatch(load(currentPage, pageSize, queryUser, pendingOnly));
+	};
 }
 
 function loadPendingCount() {
@@ -82,6 +98,7 @@ export default {
   getAvailableVocabularies,
   load,
   loadPendingCount,
+  reloadCurrentPage,
   remove,
   resolve,
 };

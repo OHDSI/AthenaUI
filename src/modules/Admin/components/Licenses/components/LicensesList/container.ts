@@ -41,6 +41,7 @@ interface IListDispatchProps {
 	removeAll: (license: License) => void;
 };
 interface IListProps extends IListStateProps, IListDispatchProps {
+	pendingOnly: boolean;
 };
 
 class LicensesList extends Component<IListProps, {}> {
@@ -60,7 +61,7 @@ function mapStateToProps(state: Object): IListStateProps {
 const mapDispatchToProps = {
 	openEditModal: data => ModalUtils.actions.toggle(modal.editPermission, true, data),
   remove: actions.licenses.remove,
-  loadLicenses: actions.licenses.load,
+  loadLicenses: actions.licenses.reloadCurrentPage,
   loadPendingCount: actions.licenses.loadPendingCount,
 };
 
@@ -90,7 +91,7 @@ function mergeProps(
   };
 }
 
-export default connect<IListStateProps, IListDispatchProps, {}>(
+export default connect<IListStateProps, IListDispatchProps, { pendingOnly: boolean }>(
 	mapStateToProps,
 	mapDispatchToProps,
 	mergeProps,

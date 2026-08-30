@@ -105,11 +105,11 @@ function ModalEditPermissions(props) {
       label: `Pending (${pendingVocabularies.length})`,
       content: <div {...classes('tab-content')}>
         <div {...classes('pending-voc')}>
-          <span {...classes('pending-voc-name')}></span>
+          <span {...classes('pending-voc-name')}>Vocabulary</span>
           <div {...classes('pending-date')}>Requested at</div>
           <div {...classes('pending-button')}>Allow</div>
           <div {...classes('pending-button')}>Forbid</div>
-          <div {...classes('pending-cancel')}></div>
+          <div {...classes('pending-cancel')}>Action</div>
         </div>
         {pendingVocabularies.map((voc: Vocabulary) =>
           <div {...classes('pending-voc')} key={voc.licenseId}>
