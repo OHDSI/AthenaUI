@@ -1,0 +1,32 @@
+src/modules/Vocabulary/actions/download.ts
+  s_77ea3cbefbd88b::t_c2e3349656cedd 72-74,85
+src/modules/Vocabulary/components/DownloadHistory/components/ModalEditNotifications/presenter.tsx
+  s_77ea3cbefbd88b::t_c2e3349656cedd 43,51,58,68,74
+  s_77ea3cbefbd88b::t_f4cddbf68601d7 69-73
+src/modules/Vocabulary/components/DownloadHistory/components/ModalEditNotifications/container.ts
+  s_77ea3cbefbd88b::t_5fe3b7335d7ebc 49-50
+  s_77ea3cbefbd88b::t_c2e3349656cedd 62,75-81
+src/modules/Vocabulary/components/DownloadHistory/components/ModalEditNotifications/style.scss
+  s_77ea3cbefbd88b::t_c2e3349656cedd 45-49,55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "2e30134a71c1d3a3df8ffcd24b826b439dffe4c8",
+  "prompts": {},
+  "humans": {
+    "h_7f60897e49550e": {
+      "author": "konstjar <iaroshovets@ohdsi.org>"
+    }
+  },
+  "sessions": {
+    "s_77ea3cbefbd88b": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a048c9-e99a-7271-9a9a-62025a34851a",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "konstjar <iaroshovets@ohdsi.org>"
+    }
+  }
+}
