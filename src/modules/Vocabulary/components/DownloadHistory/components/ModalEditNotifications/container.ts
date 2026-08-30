@@ -46,7 +46,8 @@ class ModalEditNotifications extends Component<IModalProps, {}> {
 function mapStateToProps(state: any): IModalStateProps {
   const isOpened = get(state, `modal.${modal.notifications}.isOpened`, false);
   const selectedVocabs = get(state, 'vocabulary.notifications.queryResult', []);
-  const isLoading = get(state, 'vocabulary.notifications.isLoading', false);
+  const isLoading = get(state, 'vocabulary.notifications.isLoading', false)
+    || get(state, 'vocabulary.notifications.isSaving', false);
 
 	return {
     isOpened,
@@ -58,6 +59,7 @@ function mapStateToProps(state: any): IModalStateProps {
 const mapDispatchToProps = {
   close: () => ModalUtils.actions.toggle(modal.notifications, false),
   removeNotification: actions.download.removeNotification,
+  removeAllNotifications: actions.download.removeAllNotifications,
   getNotifications: actions.download.getNotifications,
 };
 
@@ -70,6 +72,13 @@ function mergeProps(
     ...stateProps,
     ...ownProps,
     ...dispatchProps,
+    removeAllVocabularies: () => {
+      if (!confirm('Stop tracking updates for all vocabularies?')) {
+        return;
+      }
+      dispatchProps.removeAllNotifications()
+        .then(() => dispatchProps.getNotifications());
+    },
     removeVocabulary: (vocabularyCode: string) => {
       dispatchProps.removeNotification(vocabularyCode)
         .then(() => dispatchProps.getNotifications()

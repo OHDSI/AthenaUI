@@ -69,6 +69,9 @@ function removeNotification(vocabularyCode: string) {
   return services.notifications.remove(vocabularyCode);
 }
 
+function removeAllNotifications() {
+  return services.notifications.remove(null);
+}
 
 function getNotifications() {
   return services.notifications.find();
@@ -79,6 +82,7 @@ export default {
   loadVocabVersions,
   requestDownload,
   removeNotification,
+  removeAllNotifications,
   requestNotifications,
   getNotifications,
   checkBundleAvailability,

@@ -40,6 +40,7 @@ interface IModalStateProps {
 
 interface IModalDispatchProps {
 	removeNotification: (vocabularyCode: string) => any;
+	removeAllNotifications: () => any;
 	close: Function;
 	getNotifications: Function;
 };
@@ -47,12 +48,14 @@ interface IModalDispatchProps {
 interface IModalProps extends IModalStateProps, IModalDispatchProps {
 	modal: string;
 	removeVocabulary: (code: string) => any;
+	removeAllVocabularies: () => any;
 };
 
 function ModalEditNotifications(props: IModalProps) {
   const {
     close,
     modal,
+    removeAllVocabularies,
     removeVocabulary,
     selectedVocabs,
     isLoading,
@@ -62,6 +65,13 @@ function ModalEditNotifications(props: IModalProps) {
   return (
   	<div {...classes()}>
 	    <Modal modal={modal} title='Tracked vocabularies' mods={['no-padding']}>
+	      {selectedVocabs && selectedVocabs.length > 0 &&
+          <ListItem {...classes('bulk-actions')}>
+            <Button {...classes('remove-button')} onClick={removeAllVocabularies}>
+              Stop tracking all
+            </Button>
+          </ListItem>
+	      }
 	      {selectedVocabs && selectedVocabs.map((voc: IVocab, index: number) =>
 	      	<ListItem key={index}>
 	      		{voc.name}
