@@ -25,7 +25,6 @@ import BEMHelper from 'services/BemHelper';
 import {
   Button,
   Table,
-  TableCellText,
   Link,
 } from 'arachne-ui-components';
 import { License, Vocabulary } from 'modules/Admin/components/Licenses/types';
@@ -33,6 +32,87 @@ import * as moment from 'moment';
 import { fullDateFormat } from 'const/formats';
 
 require('./style.scss');
+
+function copyUsingTextArea(value: string): Promise<void> {
+  const textArea = document.createElement('textarea');
+  textArea.value = value;
+  textArea.setAttribute('readonly', '');
+  textArea.style.position = 'fixed';
+  textArea.style.opacity = '0';
+  document.body.appendChild(textArea);
+  textArea.select();
+
+  let copied = false;
+  try {
+    copied = document.execCommand('copy');
+  } finally {
+    document.body.removeChild(textArea);
+  }
+
+  return copied ? Promise.resolve() : Promise.reject(new Error('Copy failed'));
+}
+
+function copyToClipboard(value: string): Promise<void> {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(value).catch(() => copyUsingTextArea(value));
+  }
+  return copyUsingTextArea(value);
+}
+
+interface ICopyButtonProps {
+  value: string;
+  label: string;
+}
+
+interface ICopyButtonState {
+  copied: boolean;
+}
+
+class CopyButton extends React.Component<ICopyButtonProps, ICopyButtonState> {
+  private resetTimer: number;
+
+  constructor(props: ICopyButtonProps) {
+    super(props);
+    this.state = { copied: false };
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  componentWillUnmount() {
+    window.clearTimeout(this.resetTimer);
+  }
+
+  handleClick(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    copyToClipboard(this.props.value)
+      .then(() => {
+        this.setState({ copied: true });
+        window.clearTimeout(this.resetTimer);
+        this.resetTimer = window.setTimeout(() => this.setState({ copied: false }), 1500);
+      })
+      .catch(() => {});
+  }
+
+  render() {
+    const classes = BEMHelper('licenses-list');
+    const title = this.state.copied ? `${this.props.label} copied` : `Copy ${this.props.label}`;
+
+    return (
+      <button
+        {...classes('copy-button', { copied: this.state.copied })}
+        type='button'
+        onClick={this.handleClick}
+        title={title}
+        aria-label={title}
+        aria-live='polite'
+        disabled={!this.props.value}
+      >
+        {this.state.copied ? 'check' : 'content_copy'}
+      </button>
+    );
+  }
+}
 
 function CellRemove(props: any) {
   const { remove } = props;
@@ -56,12 +136,27 @@ function CellVocabs(props: any) {
 }
 
 function CellEmail(props: any) {
-  return <Link
-    {...props}
-    to={`mailto:${props.value}`}
-  >
-    {props.value}
-  </Link>;
+  const classes = BEMHelper('licenses-list');
+
+  return (
+    <div {...classes('copyable')}>
+      <span {...classes('copy-value')}>
+        <Link to={`mailto:${props.value}`}>{props.value}</Link>
+      </span>
+      <CopyButton value={props.value} label='email address' />
+    </div>
+  );
+}
+
+function CellName(props: any) {
+  const classes = BEMHelper('licenses-list');
+
+  return (
+    <div {...classes('copyable')}>
+      <span {...classes('copy-value')}>{props.value}</span>
+      <CopyButton value={props.value} label='user name' />
+    </div>
+  );
 }
 
 function CellDate(props: any) {
@@ -90,7 +185,7 @@ function Results(props: IListProps) {
         data={licenses}
         mods={['padded']}
       >
-        <TableCellText
+        <CellName
           {...classes('name')}
           header='User'
           field='user.name'

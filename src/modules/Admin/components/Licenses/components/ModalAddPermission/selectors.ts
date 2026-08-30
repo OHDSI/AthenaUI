@@ -42,10 +42,15 @@ const getVocabularies = createSelector(
 
 const getUsers = createSelector(
 	getRawUsers,
-	(rawUsers: Array<any>): Array<UserOption> => rawUsers.map(user => ({
-		label: [user.firstName, user.middleName, user.lastName].filter(n => n).join(' '),
-		value: user.id,
-	}))
+	(rawUsers: Array<any>): Array<UserOption> => rawUsers.map((user) => {
+		const name = [user.firstName, user.middleName, user.lastName].filter(n => n).join(' ');
+		const label = name && user.email ? `${name} (${user.email})` : name || user.email;
+
+		return {
+			label,
+			value: user.id,
+		};
+	})
 );
 
 export default {

@@ -54,6 +54,65 @@
     &__pending {
       font-weight: 600; /*$font-weight-middle*/
     }
+
+    &__copyable {
+      align-items: center;
+      display: flex;
+      gap: 0.5rem;
+      min-width: 0;
+
+      &:hover,
+      &:focus-within {
+        .#{$namespace}licenses-list__copy-button {
+          opacity: 1;
+          pointer-events: auto;
+        }
+      }
+    }
+
+    &__copy-value {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &__copy-button {
+      @include material-icon();
+      background: transparent;
+      border: 0;
+      color: $grey-dark-light;
+      cursor: pointer;
+      flex: 0 0 auto;
+      font-size: 1.125rem;
+      line-height: 1;
+      opacity: 0;
+      padding: 0.25rem;
+      pointer-events: none;
+      transition: color 150ms ease, opacity 150ms ease;
+
+      &:hover,
+      &:focus {
+        color: $blue;
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      &:focus {
+        outline: 2px solid $blue;
+        outline-offset: 1px;
+      }
+
+      &--copied {
+        color: $green;
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
+    }
   }
 
   &vocab {
