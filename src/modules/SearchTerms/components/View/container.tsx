@@ -106,7 +106,7 @@ function mapStateToProps(state: Object, ownProps: ITermRoute): ITermStateProps {
   const isLoadingRelations = get(state, 'searchTerms.relations.isLoading', false);
   const isLoadingRelationships = get(state, 'searchTerms.relationships.isLoading', false);
   const isLoading = isLoadingTerm || isLoadingRelations || isLoadingRelationships;
-  const termId = parseInt(ownProps.routeParams.termId, 0);
+  const termId = parseInt(ownProps.routeParams.termId, 10);
   const name = get(state, 'searchTerms.terms.data.name', 'Term');
   const details = get(state, 'searchTerms.terms.data', {});
   const isStandard = get(details, 'standardConcept') === 'Standard';
