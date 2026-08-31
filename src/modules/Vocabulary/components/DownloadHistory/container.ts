@@ -127,19 +127,23 @@ function mergeProps(
     },
     restoreBundle: (bundle) => {
       dispatchProps
-        .checkAvailability(bundle.id)
-        .then(({ accessible, vocabularyIds }) => {
-          if (accessible) {
-            dispatchProps.checkRestoreAvailability(bundle.id)
-              .then((availability) => {
-                if (availability.originalVersionAvailable) {
-                  dispatchProps.restore(bundle.id).then(dispatchProps.load);
-                } else {
+        .checkRestoreAvailability(bundle.id)
+        .then((availability) => {
+          if (availability.originalVersionAvailable) {
+            // An exact historical rebuild uses the vocabulary state recorded in the
+            // retained release, not today's disabled-vocabulary flags.
+            dispatchProps.restore(bundle.id).then(dispatchProps.load);
+          } else {
+            // Regeneration from the current release must still obey current availability
+            // and licence rules.
+            dispatchProps.checkAvailability(bundle.id)
+              .then(({ accessible, vocabularyIds }) => {
+                if (accessible) {
                   dispatchProps.showRestoreUnavailableModal(bundle, availability);
+                } else {
+                  dispatchProps.showRequestModal(vocabularyIds, 'restore');
                 }
               });
-          } else {
-            dispatchProps.showRequestModal(vocabularyIds, 'restore');
           }
         });
     },
