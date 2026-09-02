@@ -69,6 +69,7 @@ const resultsPageSize = 15;
 
 const bundleStatuses: { [key: string]: string } = keyMirror({
   PENDING: null,
+  GENERATING: null,
   READY: null,
   FAILED: null,
   ARCHIVED: null,
