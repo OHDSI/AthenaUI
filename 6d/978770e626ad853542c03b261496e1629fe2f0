@@ -1,0 +1,24 @@
+src/modules/Vocabulary/const.ts
+  s_36c4c656946574::t_a789f2b568427d 72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "6d978770e626ad853542c03b261496e1629fe2f0",
+  "prompts": {},
+  "humans": {
+    "h_7f60897e49550e": {
+      "author": "konstjar <iaroshovets@ohdsi.org>"
+    }
+  },
+  "sessions": {
+    "s_36c4c656946574": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a062d1-1b9a-7d83-b1f5-e9d80dc82060",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "konstjar <iaroshovets@ohdsi.org>"
+    }
+  }
+}
