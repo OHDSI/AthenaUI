@@ -34,7 +34,6 @@
     "feathers-client": "1.9.0",
     "feathers-reduxify-services": "0.3.0",
     "feathers-rest-arachne": "1.7.3",
-    "gtagger": "^1.0.1",
     "jquery-param": "0.2.0",
     "lodash": "4.17.19",
     "moment": "^2.24.0",
