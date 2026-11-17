@@ -64,18 +64,31 @@ function mapStateToProps(state: Object, ownProps: Object): ILoginStateProps {
 	};
 }
 
-function handleLoginResult(backUrl, message) {
-  if (message.data.type === 'loginResult') {
-    // protection from webpack's post message    
+/**
+ * Waits for the SSO popup to report a completed login. Only a message posted by that popup,
+ * from this origin, is accepted: any other window can post messages to this one. The listener
+ * removes itself once it has handled the result, so repeated clicks do not stack listeners.
+ */
+function listenForLoginResult(backUrl, popup) {
+  const handleLoginResult = function(event) {
+    if (event.origin !== window.location.origin || event.source !== popup) {
+      return;
+    }
+    // webpack's dev server also posts messages to the window
+    if (get(event, 'data.type') !== 'loginResult') {
+      return;
+    }
+    window.removeEventListener('message', handleLoginResult);
     window.location.href = backUrl;
-  }
+  };
+  window.addEventListener('message', handleLoginResult);
 }
 
 const mapDispatchToProps = function(dispatch) {
 	return {
     goToSSO: function(backUrl) {
-      window.addEventListener('message', handleLoginResult.bind(null, backUrl));
-  		window.open('/auth/sso', 'SSO login', "width=600,height=450,scrollbars=no");
+      const popup = window.open('/auth/sso', 'SSO login', "width=600,height=450,scrollbars=no");
+      listenForLoginResult(backUrl, popup);
     },
   }
 };
