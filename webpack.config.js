@@ -25,7 +25,9 @@ module.exports = function(env) {
       publicPath: '/',
       filename: 'app.[hash].js',
     },
-    devtool: 'source-map',
+    // Production bundles are copied into the backend's public resources and served as is,
+    // so a source map emitted there would be served too. Keep them for development only.
+    devtool: mode === ENV_TYPE.PRODUCTION ? false : 'source-map',
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.jsx'],
       // Fix webpack's default behavior to not load packages with jsnext:main module
