@@ -22,6 +22,7 @@
 
 import * as React from 'react';
 import BEMHelper from 'services/BemHelper';
+import { buttonProps } from 'services/A11y';
 import { apiPaths, paths } from 'modules/Auth/const';
 import { paths as VocabularyPaths } from 'modules/Vocabulary/const';
 import { paths as AdminPaths } from 'modules/Admin/const';
@@ -66,7 +67,7 @@ function UserMenu(props) {
         ref={(element) => { if (element) dropdownInstance = element; }}
         {...classes()}
       >
-        <DropdownTrigger {...classes('header')}>
+        <DropdownTrigger href="#" {...classes('header')}>
           <div {...classes('user-pic-container')}>
             <i {...classes('user-pic')}>person</i>
           </div>
@@ -98,6 +99,7 @@ function UserMenu(props) {
             <Link
               {...classes('dropdown-link')}
               onClick={logout}
+              {...buttonProps(logout)}
             >
               Logout
             </Link>

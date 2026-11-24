@@ -32,6 +32,7 @@ import {
 } from 'arachne-ui-components';
 import { RouterAction } from 'react-router-redux';
 import BEMHelper from 'services/BemHelper';
+import { buttonProps } from 'services/A11y';
 import { get } from 'lodash';
 import * as moment from 'moment';
 import { commonDateFormat } from 'const/formats';
@@ -151,7 +152,7 @@ function Term(props: ITermProps) {
       <div {...classes({ element: 'subheader-wrapper', extra: 'row' })}>
         <div className="col-xs-12">
           <div {...classes('subheader')}>
-            <Link onClick={goBack} {...classes('subheader-back-btn')}>keyboard_backspace</Link>
+            <Link onClick={goBack} {...buttonProps(goBack)} {...classes('subheader-back-btn')}>keyboard_backspace</Link>
             <span {...classes('subheader-title')}>{name}</span>
           </div>
         </div>
@@ -179,6 +180,7 @@ function Term(props: ITermProps) {
                   {description &&
                     <Dropdown {...classes('description-tooltip')}>
                       <DropdownTrigger
+                        href="#"
                         {...classes('description-trigger')}
                       >
                         help_outline
@@ -241,6 +243,7 @@ function Term(props: ITermProps) {
                   return <div {...classes('header-buttons')}>
                     <Link
                       onClick={toggleFullscreen}
+                      {...buttonProps(toggleFullscreen)}
                       {...classes('fullscreen')}
                     >
                       {`${isFullscreen ? 'fullscreen_exit' : 'fullscreen'}`}

@@ -55,7 +55,7 @@ function SearchTooltip() {
   const classes = BEMHelper('search-tooltip-dropdown');
   return (
     <Dropdown {...classes()}>
-    <DropdownTrigger {...classes('icon')}>
+    <DropdownTrigger href="#" {...classes('icon')}>
       <i {...classes('search-tooltip-icon')}>help_outline</i>
     </DropdownTrigger>
     <DropdownContent>

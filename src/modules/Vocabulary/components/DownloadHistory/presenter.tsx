@@ -29,6 +29,7 @@ import {
   TableCellText,
 } from 'arachne-ui-components';
 import BEMHelper from 'services/BemHelper';
+import { buttonProps } from 'services/A11y';
 import { paths, bundleStatuses, bundleType } from 'modules/Vocabulary/const';
 import * as moment from 'moment';
 import {
@@ -113,7 +114,7 @@ function BundleName({ name, date, onClick, isOpened, type, releaseVersion, vocab
   const dateFormat = fullDateFormat;
   const classes = BEMHelper('bundle-caption');
   const isAlreadyShared = downloadShareDTO && downloadShareDTO.ownerUsername === currentUser;
-  return <div {...classes()} onClick={onClick}>
+  return <div {...classes()} onClick={onClick} {...buttonProps(onClick)} aria-expanded={isOpened}>
     <span {...classes({ element: 'opener', modifiers: { opened: isOpened } })}>keyboard_arrow_right</span>
     <div {...classes('title-wrapper')}>
       {name}
