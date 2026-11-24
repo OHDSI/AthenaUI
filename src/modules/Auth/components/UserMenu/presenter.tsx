@@ -68,12 +68,12 @@ function UserMenu(props) {
       >
         <DropdownTrigger {...classes('header')}>
           <div {...classes('user-pic-container')}>
-            <i {...classes('user-pic')}>person</i>
+            <i {...classes('user-pic')} aria-hidden="true">person</i>
           </div>
           <div {...classes('user-name')}>
             {fullname}
           </div>
-          <span {...classes('arrow')}>play_arrow</span>
+          <span {...classes('arrow')} aria-hidden="true">play_arrow</span>
         </DropdownTrigger>
         <DropdownContent {...classes('content-wrapper')}>
           <div

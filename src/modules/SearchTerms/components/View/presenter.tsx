@@ -151,7 +151,7 @@ function Term(props: ITermProps) {
       <div {...classes({ element: 'subheader-wrapper', extra: 'row' })}>
         <div className="col-xs-12">
           <div {...classes('subheader')}>
-            <Link onClick={goBack} {...classes('subheader-back-btn')}>keyboard_backspace</Link>
+            <Link onClick={goBack} {...classes('subheader-back-btn')} aria-label="Back">keyboard_backspace</Link>
             <span {...classes('subheader-title')}>{name}</span>
           </div>
         </div>
@@ -180,6 +180,7 @@ function Term(props: ITermProps) {
                     <Dropdown {...classes('description-tooltip')}>
                       <DropdownTrigger
                         {...classes('description-trigger')}
+                        aria-label="Vocabulary details"
                       >
                         help_outline
                       </DropdownTrigger>
@@ -242,6 +243,7 @@ function Term(props: ITermProps) {
                     <Link
                       onClick={toggleFullscreen}
                       {...classes('fullscreen')}
+                      aria-label={isFullscreen ? 'Exit full screen' : 'Full screen'}
                     >
                       {`${isFullscreen ? 'fullscreen_exit' : 'fullscreen'}`}
                     </Link>

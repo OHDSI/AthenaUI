@@ -30,7 +30,7 @@ export default function EmailListInput({ fields }) {
 
             <div {...classes('add-button-container')}>
                 <Link {...classes('add-button')} onClick={() => fields.push('')}>
-                    <span {...classes('icon')}>add_circle_outline</span>
+                    <span {...classes('icon')} aria-hidden="true">add_circle_outline</span>
                     <span {...classes('label')}>{addButtonTitle}</span>
                 </Link>
             </div>
