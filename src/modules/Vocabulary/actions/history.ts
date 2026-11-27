@@ -44,10 +44,8 @@ function regenerateCurrent(id: number) {
   return (dispatch: Function) => ohdsiApi.doPost(apiPaths.regenerateCurrent(id), {});
 }
 
-function share(values: string, id: number) {
-  return (dispatch: Function) => {
-    return ohdsiApi.doPost(apiPaths.share(id), values);
-  };
+function share(values: { emailList: string }, id: number) {
+  return () => API.service(apiPaths.share(id)).create(values);
 }
 
 export default {

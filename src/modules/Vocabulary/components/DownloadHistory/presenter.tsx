@@ -206,7 +206,7 @@ function VocabsList(props: IDownloadHistoryProps & IDownloadHistoryStatefulProps
         <Button onClick={showNotifications} mods={['submit', 'rounded']}>Notifications</Button>
       </Toolbar>
       <Accordion activeItems={[expandedBundleId]}>
-        {history && history.map((bundle: IDownloadRequest, index: number) =>
+        {history && history.map((bundle: IDownloadRequest) =>
           <AccordionItem
             title={<BundleTitle
               bundle={bundle}
@@ -220,7 +220,8 @@ function VocabsList(props: IDownloadHistoryProps & IDownloadHistoryStatefulProps
               currentUser={currentUser}
              />}
             {...classes('bundle-caption')}
-            key={`caption${index}`}
+            key={bundle.id}
+            uuid={`bundle-${bundle.id}`}
             slug={bundle.id}
           >
             <Table
