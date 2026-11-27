@@ -22,6 +22,7 @@
 
 import * as React from 'react';
 import BEMHelper from 'services/BemHelper';
+import { buttonProps } from 'services/A11y';
 import {
   Button,
   Table,
@@ -111,7 +112,8 @@ function CellLicense(props: any) {
               return false;
             }
             openRequestModal();
-          }}>
+          }}
+          {...(notAvailable ? {} : buttonProps(openRequestModal))}>
           <span {...classes({ element: 'icon', extra: `${className}--disabled` })} aria-hidden="true">
             vpn_key
           </span>

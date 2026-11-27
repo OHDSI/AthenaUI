@@ -22,6 +22,7 @@
 
 import * as React from 'react';
 import BEMHelper from 'services/BemHelper';
+import { buttonProps } from 'services/A11y';
 import { Action } from 'redux';
 import { FormProps, DataShape, change as reduxFormChange } from 'redux-form';
 import {
@@ -86,6 +87,8 @@ function generateElement(className: string, type: string, text: string, onClick:
         <span
             {...classes(`remove-button`)}
             onClick={onClick}
+            {...buttonProps(onClick)}
+            aria-label={`Remove ${text}`}
         >
               clear
           </span>

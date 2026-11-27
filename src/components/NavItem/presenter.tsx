@@ -22,6 +22,7 @@
 
 import * as React from 'react';
 import BEMHelper from 'services/BemHelper';
+import { buttonProps } from 'services/A11y';
 import { NavItem as INavItem } from 'modules/IModule';
 import {
   Link,
@@ -44,7 +45,11 @@ function NavItem(props: INavItem) {
       {name}
     </Link>
     :
-    <div {...classes({ modifiers: { 'no-link': true, selected: isActive } })} onClick={onClick}>
+    <div
+      {...classes({ modifiers: { 'no-link': true, selected: isActive } })}
+      onClick={onClick}
+      {...(onClick ? buttonProps(onClick) : {})}
+    >
       {children}
     </div>
 }

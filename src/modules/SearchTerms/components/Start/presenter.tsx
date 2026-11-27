@@ -22,6 +22,7 @@
 
 import * as React from 'react';
 import BEMHelper from 'services/BemHelper';
+import { buttonProps } from 'services/A11y';
 import { Button, FormInput, Form } from 'arachne-ui-components';
 import imgs from 'const/images';
 
@@ -73,7 +74,11 @@ function TermCard(props) {
     const {title, domainName, count, imageUrl, onClick} = props;
 
     return (
-        <div {...cardClasses('card')} onClick={() => onClick(domainName)}>
+        <div
+            {...cardClasses('card')}
+            onClick={() => onClick(domainName)}
+            {...buttonProps(() => onClick(domainName))}
+        >
             <img src={imageUrl} alt=""/>
             <div {...cardClasses('title')}>{title}</div>
 
