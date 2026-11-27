@@ -16,6 +16,10 @@ fs.rmSync(path.join(nodeModules, '@types', 'redux-form', 'node_modules'), {
   force: true,
 });
 
-// (A second step used to rewrite arachne-ui-components' compound @extends in
-// tooltip.scss, which Dart Sass rejects. Fixed at source in 1.21.0, so it is
-// gone.)
+// react-sanfona 0.2.3 expects a default export, but uuid 11 exports v4 by name.
+const accordionItem = require.resolve('react-sanfona/dist-modules/AccordionItem');
+const original = fs.readFileSync(accordionItem, 'utf8');
+const updated = original.replace('_uuid2.default.v4()', '_uuid.v4()');
+if (updated !== original) {
+  fs.writeFileSync(accordionItem, updated);
+}

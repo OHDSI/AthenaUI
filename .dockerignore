@@ -3,7 +3,7 @@ node_modules
 reconciliation
 athena-identity-migration.md
 athena-validation-security-review.md
-.env
-.env.*
-*.pem
-*.key
+**/.env
+**/.env.*
+**/*.pem
+**/*.key

@@ -39,6 +39,20 @@ class Auth {
 		if (cachedAuthToken) {
 			this.store.dispatch(authActions.core.setToken(cachedAuthToken));
 		}
+		// Another tab can change the account while this tab still holds its download history.
+		const reloadIfAccountChanged = () => {
+			if ((this.getAuthToken() || null) !== window.localStorage.getItem(authTokenName)) {
+				window.location.reload();
+			}
+		};
+		window.addEventListener('storage', event => {
+			if (event.storageArea === window.localStorage && (event.key === authTokenName || event.key === null)) {
+				reloadIfAccountChanged();
+			}
+		});
+		window.addEventListener('pageshow', event => {
+			if (event.persisted) reloadIfAccountChanged();
+		});
 	}
 
 	getAuthToken = () => {

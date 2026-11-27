@@ -23,7 +23,6 @@
 import { connect } from 'react-redux';
 import { Component } from 'react';
 import * as get from 'lodash/get';
-import { push as goToPage } from 'react-router-redux';
 import coreActions from 'modules/Auth/actions/core';
 import { revokeLocalSession } from 'modules/Auth/actions/logout';
 import principalActions from 'modules/Auth/actions/principal';
@@ -88,11 +87,12 @@ function mapStateToProps(state): IUserMenuState {
 const mapDispatchToProps = function(dispatch) {
   return {
     loadPrincipal: () => dispatch(principalActions.load()),
-    resetPrincipal: () => dispatch(principalActions.reset),
+    resetPrincipal: () => dispatch(principalActions.reset()),
     logout: async () => {
       await revokeLocalSession();
       dispatch(coreActions.setToken(null));
-      dispatch(goToPage('/'));
+      // Discard account-specific Redux data and any in-flight history requests.
+      window.location.replace('/');
     },
   };
 };

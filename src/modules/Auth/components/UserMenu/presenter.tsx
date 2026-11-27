@@ -97,7 +97,10 @@ function UserMenu(props) {
             }
             <Link
               {...classes('dropdown-link')}
-              onClick={logout}
+              onClick={event => {
+                event.preventDefault();
+                logout();
+              }}
             >
               Logout
             </Link>
