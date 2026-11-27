@@ -26,19 +26,26 @@ import { licenseStatuses } from 'const/vocabulary';
 
 const getRawVocs = (state: Object) => get(state, 'modal.editPermission.data.vocabularies', []) || [];
 
+const newestFirst = (field: string) => (left: any, right: any) =>
+  (Date.parse(right[field]) || 0) - (Date.parse(left[field]) || 0);
+
 const getVocabularies = createSelector(
     getRawVocs,
     (rawResults: Array<any>) => rawResults
       .filter(voc => voc.status === licenseStatuses.APPROVED)
+      .sort(newestFirst('grantedAt'))
       .map((voc) => ({
         label: voc.code,
         value: voc.licenseId,
+        grantedAt: voc.grantedAt,
+        grantedBy: voc.grantedBy,
       })),
   );
 const getPendingVocabularies = createSelector(
   getRawVocs,
   (rawResults: Array<any>) => rawResults
     .filter(voc => voc.status === licenseStatuses.PENDING)
+    .sort(newestFirst('requestDate'))
     .map((voc) => ({
       ...voc,
       name: voc.code,

@@ -20,8 +20,8 @@
  *
  */
 
-@import 'styles/vars-and-mixins.scss';
-@import 'react-simple-dropdown/styles/Dropdown';
+@use 'styles/vars-and-mixins' as *;
+@use 'react-simple-dropdown/styles/Dropdown';
 
 .#{$namespace} {
   &register {

@@ -4,7 +4,7 @@ import {
     Modal,
     Button,
     Form,
-    FormInput
+    FormError
 } from 'arachne-ui-components';
 import { FieldArray, Field } from 'redux-form';
 import EmailListInput from 'components/EmailListInput';
@@ -27,6 +27,7 @@ interface IModalDispatchProps {
 
 interface IModalProps extends IModalStateProps, IModalDispatchProps {
   modal: string;
+  error?: string;
 };
 
 function ModalShare(props: IModalProps) {
@@ -44,8 +45,8 @@ function ModalShare(props: IModalProps) {
       <form
           {...classes('share-form')}
           onSubmit={handleSubmit(share)}
-          {...props}
         >
+        {props.error && <div role="alert"><FormError error={props.error} /></div>}
         <FieldArray name="emailList" component={EmailListInput} />
         </form>
       </Modal>

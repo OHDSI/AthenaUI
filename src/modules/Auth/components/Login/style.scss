@@ -20,8 +20,8 @@
  *
  */
 
-@import 'styles/vars-and-mixins.scss';
-@import 'react-simple-dropdown/styles/Dropdown';
+@use 'styles/vars-and-mixins' as *;
+@use 'react-simple-dropdown/styles/Dropdown';
 
 .#{$namespace} {
   &login {
@@ -44,6 +44,10 @@
     	width: 400px;
     }
     
+    &__email {
+      margin-bottom: 12px;
+    }
+
     &__login {
     	background-color: $blue;
     	border-radius: $input-border-radius;
@@ -71,7 +75,7 @@
 		&__text {
 			&--success {
 				color: $green;
-				margin-top: 1rem;
+				margin: 0 0 1rem;
 			}
 		}
   }

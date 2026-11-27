@@ -23,8 +23,9 @@
 import API from 'services/Api';
 import services from '../apiServices';
 
-import { actionTypes } from 'modules/Admin/const';
+import { actionTypes, pageSize, paths } from 'modules/Admin/const';
 import { IAppAction } from 'actions';
+import { get } from 'lodash';
 
 function getUsers(params: { query: string }) {
 	return services.users.find({ query: params });
@@ -49,8 +50,31 @@ function load(page: number, pageSize: number, queryUser?: string, pendingOnly?: 
   });
 }
 
+function reloadCurrentPage() {
+	return (dispatch, getState) => {
+		const state = getState();
+		const currentPage = parseInt(
+			get(state, 'routing.locationBeforeTransitions.query.page', '1'),
+			10,
+		) || 1;
+		const queryUser = get(state, 'form.licenseFilter.values.username', '');
+		const pathname = get(state, 'routing.locationBeforeTransitions.pathname', '');
+		const pendingOnly = pathname === paths.licenses(true);
+
+		return dispatch(load(currentPage, pageSize, queryUser, pendingOnly));
+	};
+}
+
+function loadPendingCount() {
+	return services.licensePendingCount.find();
+}
+
 function remove(vocabId: number) {
 	return services.licenses.remove(vocabId);
+}
+
+function cancelRequest(licenseId: number) {
+	return services.licenseRequests.remove(licenseId);
 }
 
 function create(userId: number, vocabularyV4Ids: Array<number>) {
@@ -69,9 +93,12 @@ function resolve(id: number, accepted: boolean) {
 
 export default {
   create,
+  cancelRequest,
   getUsers,
   getAvailableVocabularies,
   load,
+  loadPendingCount,
+  reloadCurrentPage,
   remove,
   resolve,
 };

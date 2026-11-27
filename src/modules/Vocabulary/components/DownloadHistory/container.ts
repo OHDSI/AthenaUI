@@ -100,10 +100,16 @@ const mapDispatchToProps = {
   load: actions.history.load,
   remove: actions.history.remove,
   restore: actions.history.restore,
+  checkRestoreAvailability: actions.history.checkRestoreAvailability,
   share: actions.history.share,
   showNotifications: () => ModalUtils.actions.toggle(modal.notifications, true),
   checkAvailability: actions.download.checkBundleAvailability,
   showRequestModal: (ids = [], message) => ModalUtils.actions.toggle(modal.licenses, true, { licenses: ids, message }),
+  showRestoreUnavailableModal: (bundle, availability) => ModalUtils.actions.toggle(
+    modal.restoreUnavailable,
+    true,
+    { bundle, availability },
+  ),
   showShareModal: (bundle) => ModalUtils.actions.toggle(modal.share, true, { bundle }),
 };
 
@@ -119,16 +125,27 @@ function mergeProps(
         .remove(id)
         .then(dispatchProps.load);
     },
-    restoreBundle: (id) => {
+    restoreBundle: (bundle) => {
       dispatchProps
-        .checkAvailability(id)
-        .then(({ accessible, vocabularyIds }) => {
-          if (accessible) {
-            dispatchProps.restore(id).then(dispatchProps.load);
+        .checkRestoreAvailability(bundle.id)
+        .then((availability) => {
+          if (availability.originalVersionAvailable) {
+            // An exact historical rebuild uses the vocabulary state recorded in the
+            // retained release, not today's disabled-vocabulary flags.
+            dispatchProps.restore(bundle.id).then(dispatchProps.load);
           } else {
-            dispatchProps.showRequestModal(vocabularyIds, 'restore');
+            // Regeneration from the current release must still obey current availability
+            // and licence rules.
+            dispatchProps.checkAvailability(bundle.id)
+              .then(({ accessible, vocabularyIds }) => {
+                if (accessible) {
+                  dispatchProps.showRestoreUnavailableModal(bundle, availability);
+                } else {
+                  dispatchProps.showRequestModal(vocabularyIds, 'restore');
+                }
+              });
           }
-        })
+        });
     },
     download(bundle: IDownloadRequest) {
       dispatchProps

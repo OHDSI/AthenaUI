@@ -35,18 +35,17 @@ export default function EmailListInput({ fields }) {
                     onClick={() => fields.push('')}
                     {...buttonProps(() => fields.push(''))}
                 >
-                    <span {...classes('icon')}>add_circle_outline</span>
+                    <span {...classes('icon')} aria-hidden="true">add_circle_outline</span>
                     <span {...classes('label')}>{addButtonTitle}</span>
                 </Link>
             </div>
 
             <Button
-                disabled={fields.length === 0}
                 {...classes('submit')}
                 type="submit"
                 mods={['success', 'rounded']}
             >
-                Share
+                {fields.length ? 'Share' : 'Clear sharing'}
             </Button>
         </div>
     );

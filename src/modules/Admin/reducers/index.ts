@@ -32,6 +32,8 @@ const statisticsSorting = new ReducerFactory()
 export default combineReducers({
 	vocabularies: services.vocabularies.reducer,
 	licenses: services.licenses.reducer,
+	licenseRequests: services.licenseRequests.reducer,
+	licensePendingCount: services.licensePendingCount.reducer,
 	users: services.users.reducer,
 	statistics: services.statistics.reducer,
 	statisticsSorting,

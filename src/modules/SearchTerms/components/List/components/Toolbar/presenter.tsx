@@ -55,8 +55,8 @@ function SearchTooltip() {
   const classes = BEMHelper('search-tooltip-dropdown');
   return (
     <Dropdown {...classes()}>
-    <DropdownTrigger href="#" {...classes('icon')}>
-      <i {...classes('search-tooltip-icon')}>help_outline</i>
+    <DropdownTrigger href="#" {...classes('icon')} aria-label="Search tips">
+      <i {...classes('search-tooltip-icon')} aria-hidden="true">help_outline</i>
     </DropdownTrigger>
     <DropdownContent>
       <Panel title="Here are several options to use the search:" mods="black-header" {...classes('content')}>

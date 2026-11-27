@@ -70,10 +70,19 @@ const numberFormatter = {
   },
 };
 
+const OUTER_LINK_PROTOCOLS = ['http', 'https'];
+
+/**
+ * True for a web link to another site. The protocol has to be checked as well as the domain:
+ * the result is rendered as an <a href>, and a value such as "javascript://example.com/..."
+ * has a domain too.
+ */
 const isOuterLink = function(link) {
   const currentUri = new URI(window.location.href);
   const givenUri = new URI(link);
-  return givenUri.domain().length !== 0 && currentUri.domain() !== givenUri.domain();
+  return OUTER_LINK_PROTOCOLS.indexOf(givenUri.protocol().toLowerCase()) !== -1
+    && givenUri.domain().length !== 0
+    && currentUri.domain() !== givenUri.domain();
 }
 
 function diffInDays(fromDate: moment.Moment | number, toDate: moment.Moment | number) {

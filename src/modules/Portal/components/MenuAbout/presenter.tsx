@@ -47,7 +47,7 @@ function MenuAbout({ openModal }) {
 
   return (
     <NavItem onClick={openModal}>
-      <i {...classes()}>help_outline</i>
+      <i {...classes()} role="img" aria-label="About Athena">help_outline</i>
     </NavItem>
   )
 }

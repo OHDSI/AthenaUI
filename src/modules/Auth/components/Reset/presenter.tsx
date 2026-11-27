@@ -24,10 +24,10 @@ import * as React from 'react';
 import {
   Button,
   Panel,
-  Form,
+  FormError,
   LoadingPanel,
-  FormInput,
 } from 'arachne-ui-components';
+import { AccountForm, newPassword, reminderEmail } from 'modules/Auth/accountFields';
 import BEMHelper from 'services/BemHelper';
 import { paths } from 'modules/Auth/const';
 
@@ -37,25 +37,11 @@ function Reset(props) {
   const classes = BEMHelper('reset');
   const {
     isLoading,
-    doSubmit,
   } = props;
-  const fields = [
-    {
-      name: 'password',
-      InputComponent: {
-        component: FormInput,
-        props: {
-          mods: ['bordered'],
-          placeholder: 'new password',
-          type: 'password',
-          required: true,
-        },
-      },
-    },
-  ];
+  const hasLink = !reminderEmail.validate(props.email) && props.token && props.token.trim();
   const submitBtn = {
-    label: 'Send request',
-    loadingLabel: 'Sending...',
+    label: 'Save new password',
+    loadingLabel: 'Saving…',
   };
 
   return (
@@ -65,12 +51,14 @@ function Reset(props) {
         title="Reset password"
       >
         <div {...classes('form-container')}>          
-          <Form
-            fields={fields}
+          {hasLink ? <AccountForm
+            fields={[newPassword]}
             submitBtn={submitBtn}
-            onSubmit={doSubmit}
             {...props}
-          />
+          /> : <div role="alert">
+            <FormError error="This reset link is invalid or incomplete. Request a new link." />
+            <Button link={paths.remindPassword()}>Request a reset link</Button>
+          </div>}
           <Button {...classes('back-btn')} link={paths.login()}>Back to login</Button>
           <LoadingPanel active={isLoading} />
         </div>

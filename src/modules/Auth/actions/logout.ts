@@ -21,6 +21,11 @@
  */
 
 import services from '../apiServices';
+import API from 'services/Api';
+
+export function revokeLocalSession() {
+  return API.service('users/logout').create({});
+}
 
 function logout() {
   return services.auth_logout.find();

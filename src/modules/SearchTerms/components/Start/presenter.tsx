@@ -79,11 +79,11 @@ function TermCard(props) {
             onClick={() => onClick(domainName)}
             {...buttonProps(() => onClick(domainName))}
         >
-            <img src={imageUrl}/>
+            <img src={imageUrl} alt=""/>
             <div {...cardClasses('title')}>{title}</div>
 
             <span {...cardClasses('termsCount')}>
-                <img src={imgs.search.negotiation}/>
+                <img src={imgs.search.negotiation} alt=""/>
                 {count}</span>
         </div>
     );

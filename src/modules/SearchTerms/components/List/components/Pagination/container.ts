@@ -111,7 +111,7 @@ function mergeProps(
       dispatchProps.changePageSize(pageSize);
       currentAddress.setSearch('pageSize', pageSize);
       currentAddress.setSearch('page', 1);
-      return dispatchProps.search(currentAddress.href());
+      return dispatchProps.search(currentAddress.href()) as any;
     },
   };
 }
@@ -120,4 +120,4 @@ export default connect<IPaginationStateProps, IPaginationDispatchProps, IPaginat
   mapStateToProps,
   mapDispatchToProps,
   mergeProps
- )(Pagination);
+ )(Pagination as any);
