@@ -1,6 +1,7 @@
 # AthenaUI Front-end
 AthenaUI front-end application is the single page web application built via React UI library. 
-Application is distributed as a Java Jar archive.
+It is shipped inside the [Athena API](https://github.com/OHDSI/Athena) Jar archive, which compiles
+this application from source at build time.
 
 # Build Web Applications
 
@@ -26,9 +27,20 @@ In order to assemble AthenaUI web application please run:
 ```
 npm run build
 ```
-In order to assemble AthenaUI.jar please run:
+The compiled application is written to `dist/`.
+
+### Package into the Athena Jar
+
+The Jar is built from the [Athena](https://github.com/OHDSI/Athena) repository, which checks this
+application out as the `ui` submodule and builds it from source. There is no separate artifact to
+publish from here:
 ```
+cd Athena
 mvn clean package
+```
+To package a different checkout of this repository instead of the pinned submodule:
+```
+mvn clean package -Dathena.ui.dir=/path/to/AthenaUI
 ```
 
 

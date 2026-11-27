@@ -27,7 +27,7 @@ import thunk from 'redux-thunk';
 import reduxPromiseMiddleware from 'redux-promise-middleware'; // for feathersjs
 import createAppReducer from 'reducers';
 
-const router = routerMiddleware(browserHistory);
+const router = routerMiddleware(<any> browserHistory);
 
 const appMiddleware: Middleware[] = [thunk, router, reduxPromiseMiddleware()];
 
@@ -40,7 +40,7 @@ export default function configureStore(
   middlewareList: Middleware[] = []
 ) {
   const middlewareEnhancer = applyMiddleware(...appMiddleware, ...middlewareList);
-  let enhancer = middlewareEnhancer;
+  let enhancer: any = middlewareEnhancer;
   
   if (window && (<any> window).__REDUX_DEVTOOLS_EXTENSION__) {
     enhancer = compose(middlewareEnhancer, (<any> window).__REDUX_DEVTOOLS_EXTENSION__());

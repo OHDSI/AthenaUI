@@ -171,19 +171,6 @@ function Results(props: IResultsProps & FormProps<{}, {}, {}>) {
           })}
          />
         <Cell
-          {...classes('id')}
-          header='ID (CDM v4.5)'
-          field='id'
-          props={(vocab: Vocabulary) => ({              
-            className: classes({
-              element: 'cell',
-              modifiers: {
-                selected: vocab.isChecked,
-              },
-            }).className,
-          })}
-        />
-        <Cell
           {...classes('code')}
           header='CODE (CDM v5)'
           field='code'

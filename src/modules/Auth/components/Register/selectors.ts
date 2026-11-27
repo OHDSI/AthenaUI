@@ -24,7 +24,6 @@ import { createSelector } from 'reselect';
 import { get } from 'lodash';
 
 const getRawCountries = (state: Object) => <any[]> get(state, 'auth.countries.queryResult.result') || [];
-const getRawProvinces = (state: Object) => <any[]> get(state, 'auth.provinces.queryResult.result') || [];
 
 const getCountries = createSelector(
   getRawCountries,
@@ -34,15 +33,4 @@ const getCountries = createSelector(
   }))
 );
 
-const getProvinces = createSelector(
-  getRawProvinces,
-  rawProvinces => rawProvinces.map( p => ({
-    label: p.name,
-    value: p.isoCode,
-  }))
-);
-
-export default {
-  getCountries,
-  getProvinces,
-};
+export default { getCountries };

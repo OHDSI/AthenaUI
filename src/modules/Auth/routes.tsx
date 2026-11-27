@@ -38,12 +38,12 @@ function rootRoute(path: string): PlainRoute {
         component: require('./components/Login').default,
       },
       {
-        path: 'complete',
-        component: require('./components/LoginComplete').default,
-      },
-      {
         path: 'register',
         component: require('./components/Register').default,
+      },
+      {
+        path: 'confirm-email',
+        component: require('./components/ConfirmEmail').default,
       },
       {
         path: 'welcome',

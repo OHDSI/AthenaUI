@@ -97,4 +97,4 @@ const FormToolbar = reduxForm({
 export default connect
 <IToolbarStateProps, IToolbarDispatchProps, {}>
 (mapStateToProps, mapDispatchToProps, mergeProps)
-(FormToolbar);
+(FormToolbar as any);

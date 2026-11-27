@@ -24,6 +24,13 @@ import * as React from 'react';
 import { PlainRoute } from 'react-router';
 
 function rootRoute(path: string): PlainRoute {
+  const requireNumericTermId = (nextState, replace) => {
+    const termId = nextState.params.termId;
+    if (!/^\d+$/.test(termId)) {
+      replace(`/${path}/start`);
+    }
+  };
+
   return {
     path,
     component: ({ children }) => children,
@@ -44,10 +51,12 @@ function rootRoute(path: string): PlainRoute {
       {
         path: 'terms/:termId',
         component: require('./components/View').default,
+        onEnter: requireNumericTermId,
       },
       {
         path: 'terms/:termId/:displayMode',
         component: require('./components/View').default,
+        onEnter: requireNumericTermId,
       }
     ],
   };

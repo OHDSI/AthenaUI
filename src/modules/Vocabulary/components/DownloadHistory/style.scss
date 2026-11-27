@@ -20,7 +20,8 @@
  *
  */
 
-@import 'styles/vars-and-mixins.scss';
+@use 'sass:color';
+@use 'styles/vars-and-mixins' as *;
 
 .#{$namespace} {
   &download-history {
@@ -44,7 +45,7 @@
       margin-left: 1rem;
 
       &:hover {
-        background: darken($green, 5%);
+        background: color.adjust($green, $lightness: -5%);
       }
     }
 
@@ -98,7 +99,7 @@
       overflow-y: hidden;
 
       &:not(.react-sanfona-item-expanded) {
-        border-bottom: 1px solid lighten($grey-dark-light, 30%);
+        border-bottom: 1px solid color.adjust($grey-dark-light, $lightness: 30%);
       }
 
       & .ac {

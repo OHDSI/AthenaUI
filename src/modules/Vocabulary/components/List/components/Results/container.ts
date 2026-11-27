@@ -130,4 +130,4 @@ export default connect<IResultsStateProps, IResultsDispatchProps, IResultsOwnPro
   mapStateToProps,
   mapDispatchToProps,
   mergeProps
-)(ResultsForm);
+)(ResultsForm as any);

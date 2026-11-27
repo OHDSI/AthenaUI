@@ -23,10 +23,11 @@
 import { Component } from 'react';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
-import { reduxForm, SubmissionError } from 'redux-form';
+import { reduxForm } from 'redux-form';
 import { push as goToPage } from 'react-router-redux';
 import { register as doRegister } from 'modules/Auth/actions/principal';
 import { forms, paths } from 'modules/Auth/const';
+import { submissionError } from 'modules/Auth/accountFields';
 import presenter from './presenter';
 import selectors from './selectors';
 
@@ -72,19 +73,13 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         ...data,
         address: {
           ...data.address,
-          country: (data.address && data.address.country) ? ownProps.countries.filter(c => c.value === data.address.country)
-            .map(c => ({isoCode: c.value,})).shift() : null,
-          stateProvince: (data.address && data.address.stateProvince) ? ownProps.provinces.filter(p => p.value === data.address.stateProvince)
-            .map(p => ({isoCode: p.value,})).shift() : null,
+          country: { isoCode: data.address.country },
+          stateProvince: data.address.stateProvince ? { isoCode: data.address.stateProvince } : null,
         }
       };
-      const submitPromise = dispatchProps.doRegister(reg);
-
-      submitPromise
-        .then(() => dispatchProps.goToWelcome())
-        .catch(() => {});
-
-      return submitPromise;
+      return dispatchProps.doRegister(reg).then(() => dispatchProps.goToWelcome()).catch(error => {
+        throw submissionError(error, 'Could not register. Please try again.');
+      });
     },
   };
 }

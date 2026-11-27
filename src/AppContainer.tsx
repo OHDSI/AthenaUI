@@ -38,6 +38,10 @@ import AboutInfo from 'modules/Portal/components/AboutInfo';
 import imgs from 'const/images';
 import { get } from 'lodash';
 import LicenseAgreement from 'modules/Portal/components/LicenseAgreement';
+import {
+  PROTECTION_FAILURE_EVENT,
+  hasAthenaProtectionFailure,
+} from 'services/AthenaSession';
 
 interface IAppState extends Props<App> {
   isUserAuthed: boolean;
@@ -53,7 +57,31 @@ interface IAppOwnProps {
 
 interface IAppProps extends IAppState, IAppDispatch, IAppOwnProps {};
 
-class App extends Component<IAppProps, {}> {
+interface IAppLocalState {
+  browserCheckFailed: boolean;
+}
+
+class App extends Component<IAppProps, IAppLocalState> {
+
+  state = {
+    browserCheckFailed: hasAthenaProtectionFailure(),
+  };
+
+  componentDidMount() {
+    window.addEventListener(PROTECTION_FAILURE_EVENT, this.handleBrowserCheckFailure);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener(PROTECTION_FAILURE_EVENT, this.handleBrowserCheckFailure);
+  }
+
+  handleBrowserCheckFailure = () => {
+    this.setState({ browserCheckFailed: true });
+  };
+
+  reloadPage = () => {
+    window.location.reload();
+  };
 
   render() {
     const classes = BEMHelper('root');
@@ -69,6 +97,15 @@ class App extends Component<IAppProps, {}> {
           logo={imgs.header.logo}
           navItems={this.props.navItems}
         />
+        {this.state.browserCheckFailed ? (
+          <div {...classes({ element: 'browser-check-warning' })} role="alert">
+            <span>
+              Athena could not authorize background data requests. Reload the page to restore search results.
+              If the problem continues, allow first-party cookies for athena.ohdsi.org.
+            </span>
+            <button type="button" onClick={this.reloadPage}>Reload page</button>
+          </div>
+        ) : null}
         {this.props.children}
         <LoadingPanel active={this.props.isLoggingOut} />
         <AboutInfo />

@@ -120,7 +120,7 @@ function buildStore() {
 
 function bootstrap() {
 	const store = globalStore = buildStore();
-	const history = syncHistoryWithStore(browserHistory, store);
+	const history = syncHistoryWithStore(browserHistory as any, store);
 
 	Auth.setStore(store);
 
@@ -131,7 +131,7 @@ function bootstrap() {
 		modules.forEach(module => {
 			const { moduleRoute, navbarElement } = initModule(module);
 			if (moduleRoute) {
-				modulesRoutes.push(moduleRoute);
+				modulesRoutes.push(moduleRoute as PlainRoute);
 			}
 			if (navbarElement) {
 				navbarElements = navbarElements.concat(navbarElement);
@@ -148,7 +148,7 @@ function bootstrap() {
 
 		return (
 			<Provider store={store}>
-		    <Router routes={appRoutes} history={history} />
+		    <Router routes={appRoutes} history={history as any} />
 		  </Provider>
 		);
 	});	

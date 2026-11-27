@@ -1,4 +1,4 @@
-@import 'styles/vars-and-mixins.scss';
+@use 'styles/vars-and-mixins' as *;
 
 .share-form {
     @include form();

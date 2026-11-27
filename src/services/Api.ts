@@ -20,7 +20,6 @@
  *
  */
 
-import * as authentication from 'feathers-authentication/client';
 import * as feathers from 'feathers/client';
 import * as hooks from 'feathers-hooks';
 import * as rest from 'feathers-rest-arachne/client';
@@ -31,9 +30,71 @@ import Auth from 'services/Auth';
 import { Api as OhdsiApi } from 'ohdsi-ui-toolbox';
 
 import { authTokenName } from 'const';
+import {
+  ensureAthenaSessionCookie,
+  isAthenaProtectionError,
+  notifyAthenaProtectionFailure,
+} from 'services/AthenaSession';
 
 const corePath = '/api/v1';
 let API = feathers();
+
+// `String({})`, i.e. "[object Object]". feathers-errors builds the error with
+// `new Error(body.message || body)`, so a response body carrying no `message`
+// field gets stringified whole and the message degrades to this literal. That
+// is what a plain Spring error body produces, which is why `error.message` is
+// not trustworthy on its own.
+const STRINGIFIED_OBJECT = String({});
+
+function protectedSuperagent(method: string, url: string): any {
+  const request = (<any>superagent)(method, url);
+
+  request.on('response', response => {
+    if (response.get('Athena-Session-Invalid') !== 'true' || (method.toUpperCase() !== 'GET' && response.status !== 403)) {
+      return;
+    }
+    const rejected = request.get(authTokenName);
+    if (!rejected || rejected !== Auth.getAuthToken()) {
+      return;
+    }
+    // A later sign-in in another tab may already have replaced this token.
+    if (window.localStorage.getItem(authTokenName) === rejected) {
+      window.localStorage.removeItem(authTokenName);
+    }
+    window.location.reload();
+  });
+
+  request.retry(1, (error, response) => {
+    if (isAthenaProtectionError(error, response)) {
+      ensureAthenaSessionCookie(true);
+      return true;
+    }
+    return false;
+  });
+
+  return request;
+}
+
+/**
+ * Pull a human-readable message out of an API error, across the response
+ * shapes this backend can return:
+ *
+ *   {errorCode, errorMessage, ...}          legacy JsonResult, sent with HTTP 200
+ *   {timestamp, status, error, path}        Spring's default error body
+ *   {..., message}                          Spring with server.error.include-message
+ */
+function readErrorMessage(hook): string {
+  const wrapped = get(hook, 'error.errorMessage', '');
+  if (wrapped) {
+    return wrapped;
+  }
+  const message = get(hook, 'error.message', '');
+  if (message && message !== STRINGIFIED_OBJECT) {
+    return message;
+  }
+  // `error` holds the reason phrase - "Forbidden", "Bad Request".
+  return get(hook, 'error.error', '');
+}
 
 interface ApiConfig {
   getAuthToken: Function;
@@ -55,12 +116,13 @@ function configure(props: ApiConfig): Promise<any> {
   } = props;
 
   API = API
-    .configure(rest(corePath).superagent(superagent, {withCredentials: true}))
+    .configure(rest(corePath).superagent(protectedSuperagent, {withCredentials: true}))
     .configure(hooks());
     //.configure(auth);
 
-  API.hooks({
+  API.hooks(<any>{
     before(hook) {
+      ensureAthenaSessionCookie();
       const token = getAuthToken(authTokenName);
       if (token) {
         hook.params.headers = {
@@ -78,22 +140,57 @@ function configure(props: ApiConfig): Promise<any> {
     },
 
     error(hook) {
-      if (hook.error.status === 401) {
+      if (isAthenaProtectionError(hook.error)) {
+        ensureAthenaSessionCookie(true);
+        notifyAthenaProtectionFailure();
+      }
+
+      // NB: Spring Security answers an unauthenticated request with 403, not 401,
+      // so in practice this branch does not fire and there is no automatic login
+      // redirect. Do not "fix" that by treating 403 as access-denied: public pages
+      // call auth-gated endpoints and ignore the failure (the search start page
+      // requests vocabularies/release-version), so redirecting on 403 would bounce
+      // anonymous users off pages they are allowed to see. Routing already guards
+      // the private pages via Auth.requireOnPathEnter.
+      if (hook.error.status === 401 && hook.path !== 'users/login') {
         onAccessDenied();
       } else {
-        const validationErrors = get(hook, 'error.validatorErrors');
-        if (validationErrors) {
+        const validationErrors: any = get(hook, 'error.validatorErrors');
+        // JsonResult always serializes validatorErrors, including as an empty object for
+        // non-field validation failures. Only turn it into a redux-form SubmissionError
+        // when the backend actually supplied field errors; otherwise preserve errorMessage.
+        if (validationErrors && Object.keys(validationErrors).length > 0) {
           const errors = {
             _error: get(hook, 'error.errorMessage', ''),
           };
           Object.keys(validationErrors).forEach(reKey => set(errors, reKey, validationErrors[reKey]));
           throw new SubmissionError(errors);
         }
+        // Mirror the `after` hook for non-validation failures.
+        //
+        // The API historically answered *every* error with HTTP 200 and an `errorMessage`
+        // in the body, so the `after` hook above was the only place errors were turned
+        // into a readable message. As the backend moves to real status codes, that hook
+        // stops running, and without this the licence explanation in the download modal
+        // would degrade to "[object Object]" - `errorMessage` is absent from a plain
+        // Spring error body, and so is `message`, so feathers-errors stringifies the
+        // whole body. See readErrorMessage for the shapes involved.
+        //
+        // This is backwards compatible: while the API still returns 200 the `after`
+        // hook keeps handling errors and this branch is not reached.
+        // Rewrite the message on the original error rather than throwing a new
+        // one, so callers keep the rest of the error contract (status, code,
+        // data, response) - the branch above relies on `status` being there.
+        const errorMessage = readErrorMessage(hook);
+        if (errorMessage) {
+          hook.error.message = errorMessage;
+          throw hook.error;
+        }
       }
     }
   });
 
-  return new Promise((resolve) => {resolve();}); //API.authenticate({ strategy: 'token' }).catch(() => {}); // 
+  return new Promise<void>((resolve) => {resolve();}); //API.authenticate({ strategy: 'token' }).catch(() => {}); // 
 }
 
 const ohdsiApi = new OhdsiApi();

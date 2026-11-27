@@ -20,7 +20,7 @@
  *
  */
 
-@import 'styles/vars-and-mixins.scss';
+@use 'styles/vars-and-mixins' as *;
 
 .#{$namespace} {
   &licenses {
@@ -35,6 +35,11 @@
     		background: $purple;
     	}
 		}
+
+    &__pending-total {
+      @include title();
+      white-space: nowrap;
+    }
 
     &__toolbar {
     	& .ac-form {

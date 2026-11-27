@@ -30,6 +30,7 @@ import 'core-js/fn/array/find';
 
 import * as ReactDOM from 'react-dom';
 import bootstrap from './bootstrap';
+import { initAthenaSessionProtection } from 'services/AthenaSession';
 
 if (!Array.prototype.includes) {
 	Array.prototype.includes = function(value){
@@ -38,6 +39,7 @@ if (!Array.prototype.includes) {
 }
 
 const rootEl = document.getElementById('app');
+initAthenaSessionProtection();
 bootstrap().then(app => {
 	ReactDOM.render(app, rootEl);
 });
