@@ -98,7 +98,7 @@ function CellLicense(props: any) {
     return <span>{value}</span>;
   } else if (isPending) {
     return <Link {...classes()}>
-        <span {...classes({ element: 'icon', extra: `${className}--disabled` })}>
+        <span {...classes({ element: 'icon', extra: `${className}--disabled` })} aria-hidden="true">
           timer
         </span> {value}
       </Link>;
@@ -112,7 +112,7 @@ function CellLicense(props: any) {
             }
             openRequestModal();
           }}>
-          <span {...classes({ element: 'icon', extra: `${className}--disabled` })}>
+          <span {...classes({ element: 'icon', extra: `${className}--disabled` })} aria-hidden="true">
             vpn_key
           </span>
         {value}

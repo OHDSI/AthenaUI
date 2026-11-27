@@ -117,7 +117,7 @@ function BundleName({ name, date, onClick, isOpened, type, releaseVersion, vocab
   const classes = BEMHelper('bundle-caption');
   const isAlreadyShared = downloadShareDTO && downloadShareDTO.ownerUsername === currentUser;
   return <div {...classes()} onClick={onClick}>
-    <span {...classes({ element: 'opener', modifiers: { opened: isOpened } })}>keyboard_arrow_right</span>
+    <span {...classes({ element: 'opener', modifiers: { opened: isOpened } })} aria-hidden="true">keyboard_arrow_right</span>
     <div {...classes('title-wrapper')}>
       {name}
       <span {...classes('date')}>{moment(date).format(dateFormat)}</span>
