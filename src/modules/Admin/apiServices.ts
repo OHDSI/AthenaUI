@@ -26,6 +26,8 @@ import API from 'services/Api';
 interface IAdminServices {
 	vocabularies: any;
 	licenses: any;
+	licenseRequests: any;
+	licensePendingCount: any;
 	users: any;
 	licenseAccept: any;
 	statistics: any;
@@ -36,6 +38,8 @@ export default <IAdminServices> reduxifyServices(
 	{
 		'vocabularies/licenses/suggest': 'vocabularies',
 		'vocabularies/licenses': 'licenses',
+		'vocabularies/licenses/requests': 'licenseRequests',
+		'vocabularies/licenses/pending/count': 'licensePendingCount',
 		'users/suggest': 'users',
 		'vocabularies/licenses/accept': 'licenseAccept',
 		'statistics':'statistics',

@@ -23,12 +23,22 @@
 type VocabularyOption = {
   label: string;
   value: number | string;
+  grantedAt?: string;
+  grantedBy?: Grantor;
+};
+
+type Grantor = {
+  id: number;
+  name: string;
 };
 
 type Vocabulary = {
   id: number;
   name: string;
   licenseId: number;
+  requestDate?: string;
+  grantedAt?: string;
+  grantedBy?: Grantor;
 };
 
 type User = {
@@ -41,6 +51,7 @@ type License = {
   user: User;
   vocabularies: Array<VocabularyOption>;
   pendingCount: number;
+  latestActivityDate?: string;
 };
 
 export {
@@ -48,4 +59,5 @@ export {
   VocabularyOption,
   User,
   Vocabulary,
+  Grantor,
 };

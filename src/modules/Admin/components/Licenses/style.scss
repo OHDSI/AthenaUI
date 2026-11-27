@@ -36,6 +36,11 @@
     	}
 		}
 
+    &__pending-total {
+      @include title();
+      white-space: nowrap;
+    }
+
     &__toolbar {
     	& .ac-form {
 	      &__group {

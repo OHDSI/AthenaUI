@@ -24,10 +24,9 @@ import * as React from 'react';
 import {
   Button,
   Panel,
-  Form,
   LoadingPanel,
-  FormInput,
 } from 'arachne-ui-components';
+import { AccountForm, reminderEmail } from 'modules/Auth/accountFields';
 import BEMHelper from 'services/BemHelper';
 import { paths } from 'modules/Auth/const';
 
@@ -37,22 +36,7 @@ function Remind(props) {
   const classes = BEMHelper('remind');
   const {
     isLoading,
-    doSubmit,
   } = props;
-  const fields = [
-    {
-      name: 'email',
-      InputComponent: {
-        component: FormInput,
-        props: {
-          mods: ['bordered'],
-          placeholder: 'Email',
-          type: 'text',
-          required: true,
-        },
-      },
-    },
-  ];
   const submitBtn = {
     label: 'Send request',
     loadingLabel: 'Sending...',
@@ -65,10 +49,9 @@ function Remind(props) {
         title="Remind password"
       >
         <div {...classes('form-container')}>          
-          <Form
-            fields={fields}
+          <AccountForm
+            fields={[reminderEmail]}
             submitBtn={submitBtn}
-            onSubmit={doSubmit}
             {...props}
           />
           <Button {...classes('back-btn')} link={paths.login()}>Back to login</Button>

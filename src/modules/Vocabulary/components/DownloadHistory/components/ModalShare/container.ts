@@ -7,7 +7,7 @@ import { get } from 'lodash';
 import presenter from './presenter';
 import { IModalProps, IModalStateProps, IModalDispatchProps } from './presenter';
 import * as URI from "urijs";
-import { reduxForm, reset } from 'redux-form';
+import { reduxForm, reset, SubmissionError } from 'redux-form';
 
 class ModalShare extends Component<IModalProps, {}> {
 
@@ -23,8 +23,8 @@ class ModalShare extends Component<IModalProps, {}> {
 
 function mapStateToProps(state: any): IModalStateProps {
     const bundle = get(state, `modal.${modal.share}.data.bundle`, {});
-    const emailList = get(state, `modal.${modal.share}.data.bundle.shareEmails`, '');
-    const emails = emailList.split(', ');
+    const emailList = String(get(state, `modal.${modal.share}.data.bundle.shareEmails`) || '');
+    const emails = emailList ? emailList.split(', ') : [];
   return {
     isOpened: get(state, `modal.${modal.share}.isOpened`, false),
     bundle: get(state, `modal.${modal.share}.data.bundle`, {}),
@@ -53,10 +53,13 @@ function mergeProps(
 
     share(values) {
         const { id } = stateProps.bundle;
-        const { emailList } = values;
-        const data = { emailList: emailList.filter(i => !!i).join(',') }
-        dispatchProps.shareBundle(data, id);
-        dispatchProps.close();
+        const emails: string[] = (values.emailList || []).map(email => (email || '').trim());
+        if (emails.length > 100 || emails.some(email => !email || email.length > 255 || email.includes(','))) {
+          throw new SubmissionError({ _error: 'Enter up to 100 email addresses, one per field, or remove all fields to clear sharing.' });
+        }
+        return dispatchProps.shareBundle({ emailList: emails.join(',') }, id)
+          .then(() => dispatchProps.close())
+          .catch(() => { throw new SubmissionError({ _error: 'Could not update sharing. Check the addresses and try again.' }); });
     },
 
   };

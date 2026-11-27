@@ -26,25 +26,78 @@
   &edit-permissions {
   	@include tabbed-modal();
 
-    &__tab-content {
+	  &__tab-content {
 	    padding: 2rem;
-	    min-width: 500px;
+	    box-sizing: border-box;
+	    width: 92rem;
+	    min-width: 760px;
+	    max-width: calc(100vw - 8rem);
 	    min-height: 200px;
+	    max-height: 65vh;
+	    overflow-y: auto;
 	  }
 
     &__pending-voc {
-    	display: flex;
-    	padding: 0.5rem 0;
+	    align-items: center;
+	    display: flex;
+	    min-height: 5rem;
+	    padding: 0.75rem 0;
+
+	    &:first-child {
+	      @include title();
+	      min-height: auto;
+	      padding-top: 0;
+	      padding-bottom: 1rem;
+	      border-bottom: 1px solid $grey;
+	    }
     }
 
     &__pending-voc-name {
-    	flex-grow: 1;
-    	padding-right: 0.5rem; 
+	    flex: 1 1 auto;
+	    min-width: 20rem;
+	    padding-right: 2rem;
     }
 
     &__pending-button {
-    	@include title();
-    	width: 6rem;
+	    @include title();
+	    flex: 0 0 7.5rem;
+	    text-align: center;
+    }
+
+    &__pending-date {
+      flex: 0 0 18rem;
+      padding-right: 2rem;
+      white-space: nowrap;
+    }
+
+    &__pending-cancel {
+      flex: 0 0 14rem;
+      text-align: center;
+
+	    .ac-button {
+	      white-space: nowrap;
+	    }
+    }
+
+    &__granted-header {
+      @include title();
+      display: flex;
+      padding: 0.5rem 0 0.75rem 2rem;
+      border-bottom: 1px solid $grey;
+    }
+
+    &__granted-name {
+      flex: 1;
+    }
+
+    &__granted-date {
+      flex: 0 0 18rem;
+      padding-right: 2rem;
+      white-space: nowrap;
+    }
+
+    &__granted-by {
+      flex: 0 0 24rem;
     }
 
     &__submit-button-wrapper {
@@ -61,5 +114,30 @@
 		  	margin: auto;
 		  }
 		}
+  }
+
+  &granted-permission {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid $grey-light;
+
+    & input {
+      margin-right: 1rem;
+    }
+
+    &__name {
+      flex: 1;
+    }
+
+    &__date {
+      flex: 0 0 18rem;
+      padding-right: 2rem;
+      white-space: nowrap;
+    }
+
+    &__grantor {
+      flex: 0 0 24rem;
+    }
   }
 }

@@ -39,6 +39,7 @@ const modal = keyMirror({
   confirmLicense: null,
   notifications: null,
   licenses: null,
+  restoreUnavailable: null,
 });
 
 const actionTypes = keyMirror({
@@ -59,6 +60,8 @@ const bundleType = {
 
 const apiPaths = {
   availability: id => `/vocabularies/check/${id}`,
+  restoreAvailability: id => `/vocabularies/restore/${id}/availability`,
+  regenerateCurrent: id => `/vocabularies/restore/${id}/current`,
   share: id => `/vocabularies/downloads/${id}/share`,
 };
 
@@ -66,6 +69,7 @@ const resultsPageSize = 15;
 
 const bundleStatuses: { [key: string]: string } = keyMirror({
   PENDING: null,
+  GENERATING: null,
   READY: null,
   FAILED: null,
   ARCHIVED: null,

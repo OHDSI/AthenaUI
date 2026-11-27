@@ -30,12 +30,8 @@ const loginPath = '/auth/login';
  * under a different name leaves the login popup behind, still showing the identity provider,
  * and the next sign-in reuses that stale window instead of starting a new request.
  */
-const ssoWindowName = 'athena-sso';
-const ssoWindowFeatures = 'width=600,height=450,scrollbars=no';
 
 export {
 	authTokenName,
 	loginPath,
-	ssoWindowName,
-	ssoWindowFeatures,
 };

@@ -23,12 +23,10 @@
 import { connect } from 'react-redux';
 import { Component } from 'react';
 import * as get from 'lodash/get';
-import { push as goToPage } from 'react-router-redux';
 import coreActions from 'modules/Auth/actions/core';
-import logoutActions from 'modules/Auth/actions/logout';
+import { revokeLocalSession } from 'modules/Auth/actions/logout';
 import principalActions from 'modules/Auth/actions/principal';
 import { roles } from 'modules/Auth/const';
-import { ssoWindowFeatures, ssoWindowName } from 'const';
 import presenter from './presenter';
 import {
   IUserMenuState,
@@ -56,8 +54,17 @@ class UserMenu extends Component<IUserMenuProps & IUserMenuStatefulDispatch, {}>
     }
   }
 
+  state = { logoutError: '' };
+
   render() {
-    return presenter(this.props);
+    return presenter({
+      ...this.props,
+      logoutError: this.state.logoutError,
+      logout: () => {
+        this.setState({ logoutError: '' });
+        return this.props.logout().catch(() => this.setState({ logoutError: 'Could not log out. Please try again.' }));
+      },
+    });
   }
 }
 
@@ -80,30 +87,17 @@ function mapStateToProps(state): IUserMenuState {
 const mapDispatchToProps = function(dispatch) {
   return {
     loadPrincipal: () => dispatch(principalActions.load()),
-    resetPrincipal: () => dispatch(principalActions.reset),
-    logoutLocal: () => {
-        dispatch(coreActions.setToken(null));
-        dispatch(goToPage('/'));
-    },
-    logoutSLO: (dispatch) => {
-      window.open('/auth/slo', ssoWindowName, ssoWindowFeatures);
-    }
-  }
-};
-
-function mergeProps(stateProps, dispatchProps, ownProps) {
-  return {
-    ...stateProps,
-    ...dispatchProps,
-    ...ownProps,
-    logout: ({ user, vocabulary }) => {
-      dispatchProps.logoutSLO();
-      dispatchProps.logoutLocal();
+    resetPrincipal: () => dispatch(principalActions.reset()),
+    logout: async () => {
+      await revokeLocalSession();
+      dispatch(coreActions.setToken(null));
+      // Discard account-specific Redux data and any in-flight history requests.
+      window.location.replace('/');
     },
   };
-}
+};
+
 export default connect<IUserMenuState, IUserMenuDispatch, {}>(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
+  mapDispatchToProps
 )(UserMenu);

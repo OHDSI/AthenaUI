@@ -23,22 +23,15 @@
 import * as React from 'react';
 import {
   Link,
-  Form,
-  FormInput,
   FormSelect,
   FormAutocomplete,
   LoadingPanel,
 } from 'arachne-ui-components';
+import { AccountForm, registrationFields as text } from 'modules/Auth/accountFields';
 import { paths } from 'modules/Auth/const';
 import BEMHelper from 'services/BemHelper';
 
 require('./style.scss');
-
-interface IFormRegisterProps {
-  isLoading: boolean,
-  doSubmit: Function,
-  professionalTypesOptions: any,
-};
 
 function StatefulFormAutocomplete(props) {
   const input = {
@@ -54,100 +47,21 @@ function StatefulFormAutocomplete(props) {
   />;
 }
 
+const requireCountry = value => value ? undefined : 'Select a country.';
+const requireProfession = value => value ? undefined : 'Select a professional type.';
+
 function FormRegister(props) {
   const fields = [
-    {
-      name: 'firstname',
-      InputComponent: {
-        component: FormInput,
-        props: {
-          mods: ['bordered'],
-          placeholder: 'First Name',
-          type: 'text',
-          required: true,
-          tabindex: 1,
-        },
-      },
-    },
-    {
-      name: 'address.address1',
-      InputComponent: {
-        component: FormInput,
-        props: {
-          mods: ['bordered'],
-          placeholder: 'Address',
-          type: 'text',
-          required: true,
-          tabindex: 9,
-        }
-      }
-    },
-    {
-      name: 'middlename',
-      InputComponent: {
-        component: FormInput,
-        props: {
-          mods: ['bordered'],
-          placeholder: 'Middle Name',
-          type: 'text',
-          tabindex: 2,
-        },
-      },
-    },
-    {
-      name: 'address.city',
-      InputComponent: {
-        component: FormInput,
-        props: {
-          mods: ['bordered'],
-          placeholder: 'City',
-          type: 'text',
-          required: true,
-          tabindex: 10,
-        }
-      }
-    },
-    {
-      name: 'lastname',
-      InputComponent: {
-        component: FormInput,
-        props: {
-          mods: ['bordered'],
-          placeholder: 'Last Name',
-          type: 'text',
-          required: true,
-          tabindex: 3,
-        },
-      },
-    },
-    {
-      name: 'address.zipCode',
-      InputComponent: {
-        component: FormInput,
-        props: {
-          mods: ['bordered'],
-          placeholder: 'Zip code',
-          type: 'text',
-          required: true,
-          tabindex: 11,
-        }
-      }
-    },
-    {
-      name: 'email',
-      InputComponent: {
-        component: FormInput,
-        props: {
-          mods: ['bordered'],
-          placeholder: 'Email',
-          type: 'text',
-          required: true,
-          tabindex: 4,
-        },
-      },
-    },
+    text.firstname,
+    text.address,
+    text.middlename,
+    text.city,
+    text.lastname,
+    text.zipCode,
+    text.email,
     {
       name: 'address.country',
+      validate: requireCountry,
       InputComponent: {
         component: StatefulFormAutocomplete,
         props: {
@@ -164,19 +78,7 @@ function FormRegister(props) {
         }
       }
     },
-    {
-      name: 'password',
-      InputComponent: {
-        component: FormInput,
-        props: {
-          mods: ['bordered'],
-          placeholder: 'Password',
-          type: 'password',
-          required: true,
-          tabindex: 5,
-        },
-      },
-    },
+    text.password,
     {
       name: 'address.stateProvince',
       InputComponent: {
@@ -185,6 +87,7 @@ function FormRegister(props) {
           mods: ['bordered'],
           placeholder: 'State/Province',
           options: props.provinces,
+          disabled: !props.countryId,
           fetchOptions: props.searchProvinces,
           clearable: false,
           onSelectResetsInput: true,
@@ -194,46 +97,12 @@ function FormRegister(props) {
         }
       }
     },
-    {
-      name: 'organization',
-      InputComponent: {
-        component: FormInput,
-        props: {
-          mods: ['bordered'],
-          placeholder: 'Organization',
-          type: 'text',
-          required: true,
-          tabindex: 6,
-        },
-      },
-    },
-    {
-      name: 'address.mobile',
-      InputComponent: {
-        component: FormInput,
-        props: {
-          mods: ['bordered'],
-          placeholder: 'Mobile',
-          type: 'text',
-          required: true,
-          tabindex: 14,
-        }
-      }
-    },
-    {
-      name: 'department',
-      InputComponent: {
-        component: FormInput,
-        props: {
-          mods: ['bordered'],
-          placeholder: 'Department',
-          type: 'text',
-          tabindex: 7,
-        }
-      },
-    },
+    text.organization,
+    text.mobile,
+    text.department,
     {
       name: 'professionalTypeId',
+      validate: requireProfession,
       InputComponent: {
         component: FormSelect,
         props: {
@@ -258,10 +127,9 @@ function FormRegister(props) {
         <div {...classes('column-title')}>General</div>
         <div {...classes('column-title')}>Contact Info</div>
       </div>
-      <Form
+      <AccountForm
         fields={fields}
         submitBtn={submitBtn}
-        onSubmit={props.doSubmit}
         {...props}
       />
       <span {...classes('login-caption')}>

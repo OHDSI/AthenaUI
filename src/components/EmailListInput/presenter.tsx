@@ -1,5 +1,6 @@
 import * as React from 'react';
 import BEMHelper from 'services/BemHelper';
+import { buttonProps } from 'services/A11y';
 import { FormInput, Button, ListItem, Link } from 'arachne-ui-components';
 import { Field } from 'redux-form';
 
@@ -29,19 +30,22 @@ export default function EmailListInput({ fields }) {
             </div>
 
             <div {...classes('add-button-container')}>
-                <Link {...classes('add-button')} onClick={() => fields.push('')}>
-                    <span {...classes('icon')}>add_circle_outline</span>
+                <Link
+                    {...classes('add-button')}
+                    onClick={() => fields.push('')}
+                    {...buttonProps(() => fields.push(''))}
+                >
+                    <span {...classes('icon')} aria-hidden="true">add_circle_outline</span>
                     <span {...classes('label')}>{addButtonTitle}</span>
                 </Link>
             </div>
 
             <Button
-                disabled={fields.length === 0}
                 {...classes('submit')}
                 type="submit"
                 mods={['success', 'rounded']}
             >
-                Share
+                {fields.length ? 'Share' : 'Clear sharing'}
             </Button>
         </div>
     );

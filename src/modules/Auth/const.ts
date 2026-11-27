@@ -28,6 +28,7 @@ const actionTypes = keyMirror({
 });
 
 const messages = keyMirror({
+  EMAIL_CONFIRMED: null,
   REMIND_SUCCESS: null,
   RESET_SUCCESS: null,
 });

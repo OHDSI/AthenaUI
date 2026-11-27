@@ -26,7 +26,9 @@ module.exports = function(env) {
       filename: 'app.[contenthash].js',
       clean: true,
     },
-    devtool: 'source-map',
+    // Production bundles are copied into the backend's public resources and served as is,
+    // so a source map emitted there would be served too. Keep them for development only.
+    devtool: mode === ENV_TYPE.PRODUCTION ? false : 'source-map',
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.jsx'],
       // Prefer each package's browser build, but keep excluding the `module`

@@ -30,6 +30,11 @@ import Auth from 'services/Auth';
 import { Api as OhdsiApi } from 'ohdsi-ui-toolbox';
 
 import { authTokenName } from 'const';
+import {
+  ensureAthenaSessionCookie,
+  isAthenaProtectionError,
+  notifyAthenaProtectionFailure,
+} from 'services/AthenaSession';
 
 const corePath = '/api/v1';
 let API = feathers();
@@ -40,6 +45,35 @@ let API = feathers();
 // is what a plain Spring error body produces, which is why `error.message` is
 // not trustworthy on its own.
 const STRINGIFIED_OBJECT = String({});
+
+function protectedSuperagent(method: string, url: string): any {
+  const request = (<any>superagent)(method, url);
+
+  request.on('response', response => {
+    if (response.get('Athena-Session-Invalid') !== 'true' || (method.toUpperCase() !== 'GET' && response.status !== 403)) {
+      return;
+    }
+    const rejected = request.get(authTokenName);
+    if (!rejected || rejected !== Auth.getAuthToken()) {
+      return;
+    }
+    // A later sign-in in another tab may already have replaced this token.
+    if (window.localStorage.getItem(authTokenName) === rejected) {
+      window.localStorage.removeItem(authTokenName);
+    }
+    window.location.reload();
+  });
+
+  request.retry(1, (error, response) => {
+    if (isAthenaProtectionError(error, response)) {
+      ensureAthenaSessionCookie(true);
+      return true;
+    }
+    return false;
+  });
+
+  return request;
+}
 
 /**
  * Pull a human-readable message out of an API error, across the response
@@ -82,12 +116,13 @@ function configure(props: ApiConfig): Promise<any> {
   } = props;
 
   API = API
-    .configure(rest(corePath).superagent(superagent, {withCredentials: true}))
+    .configure(rest(corePath).superagent(protectedSuperagent, {withCredentials: true}))
     .configure(hooks());
     //.configure(auth);
 
   API.hooks(<any>{
     before(hook) {
+      ensureAthenaSessionCookie();
       const token = getAuthToken(authTokenName);
       if (token) {
         hook.params.headers = {
@@ -105,6 +140,11 @@ function configure(props: ApiConfig): Promise<any> {
     },
 
     error(hook) {
+      if (isAthenaProtectionError(hook.error)) {
+        ensureAthenaSessionCookie(true);
+        notifyAthenaProtectionFailure();
+      }
+
       // NB: Spring Security answers an unauthenticated request with 403, not 401,
       // so in practice this branch does not fire and there is no automatic login
       // redirect. Do not "fix" that by treating 403 as access-denied: public pages
@@ -112,7 +152,7 @@ function configure(props: ApiConfig): Promise<any> {
       // requests vocabularies/release-version), so redirecting on 403 would bounce
       // anonymous users off pages they are allowed to see. Routing already guards
       // the private pages via Auth.requireOnPathEnter.
-      if (hook.error.status === 401) {
+      if (hook.error.status === 401 && hook.path !== 'users/login') {
         onAccessDenied();
       } else {
         const validationErrors: any = get(hook, 'error.validatorErrors');

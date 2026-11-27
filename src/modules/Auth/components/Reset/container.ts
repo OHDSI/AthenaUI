@@ -20,18 +20,16 @@
  *
  */
 
-import { Component } from 'react';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
-import { push } from 'react-router-redux';
 import { get } from 'lodash';
+import { submissionError } from 'modules/Auth/accountFields';
 import login from 'modules/Auth/actions/login';
 import { forms, paths, messages } from 'modules/Auth/const';
 import presenter from './presenter';
 
 interface IResetStateProps {
-  isUserAuthed: boolean;
-  email: String;
+  email: string;
   token: string;
 }
 
@@ -43,40 +41,21 @@ interface IResetProps extends IResetStateProps, IResetDispatchProps {
   doSubmit: Function;
 };
 
-class Reset extends Component<IResetProps, {}> {
-  componentWillMount() {
-    if (this.props.isUserAuthed) {
-      this.props.goToLogin();
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.props.isUserAuthed !== nextProps.isUserAuthed) {
-      if (nextProps.isUserAuthed) {
-        this.props.goToLogin();
-      }
-    }
-  }
-
-  render() {
-    return presenter(this.props);
-  }
-}
-
 function mapStateToProps(state) {
-  const email = get(state, 'routing.locationBeforeTransitions.query.email', '');
-  const token = get(state, 'routing.locationBeforeTransitions.query.token', '');
+  const fragment = new URLSearchParams(get(state, 'routing.locationBeforeTransitions.hash', '').slice(1));
+  const email = fragment.get('email') || get(state, 'routing.locationBeforeTransitions.query.email', '');
+  const token = fragment.get('token') || get(state, 'routing.locationBeforeTransitions.query.token', '');
 
   return {
-    isUserAuthed: !!get(state, 'auth.principal.data.id'),
     email,
     token,
   };
 }
 
-const mapDispatchToProps = {
-  goToLogin: () => push(paths.login({ message: messages.RESET_SUCCESS })),
-};
+const mapDispatchToProps = () => ({
+  // Reload the principal after a reset, including when another account is signed in.
+  goToLogin: () => window.location.replace(paths.login({ message: messages.RESET_SUCCESS })),
+});
 
 function mergeProps(
   stateProps: IResetStateProps,
@@ -93,18 +72,16 @@ function mergeProps(
         email: stateProps.email,
         token: stateProps.token,
       });
-      promise.payload.promise
-        .then(() => dispatchProps.goToLogin())
-        .catch(() => {});
-
-      return promise.payload.promise;
+      return promise.payload.promise.then(() => dispatchProps.goToLogin()).catch(error => {
+        throw submissionError(error, 'Could not reset your password.');
+      });
     },
   };
 }
 
 const FormReset = reduxForm({
   form: forms.reset,
-})(Reset);
+})(presenter);
 
 export default connect<IResetStateProps, IResetDispatchProps, {}>(
 	mapStateToProps,

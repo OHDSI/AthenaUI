@@ -24,7 +24,7 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
 import { push } from 'react-router-redux';
-import { get } from 'lodash';
+import { submissionError } from 'modules/Auth/accountFields';
 import login from 'modules/Auth/actions/login';
 import { forms, paths, messages } from 'modules/Auth/const';
 import presenter from './presenter';
@@ -64,12 +64,9 @@ function mergeProps(
     ...stateProps,
     ...dispatchProps,
     doSubmit({ email }) {
-      const promise = login.remindPassword(email);
-      promise.payload.promise
-        .then(() => dispatchProps.goToLogin())
-        .catch(() => {});
-
-      return promise.payload.promise;
+      return login.remindPassword(email).payload.promise.then(() => dispatchProps.goToLogin()).catch(error => {
+        throw submissionError(error, 'Could not request a reset link. Please try again.');
+      });
     },
   };
 }

@@ -29,6 +29,7 @@ import {
   TableCellText,
 } from 'arachne-ui-components';
 import BEMHelper from 'services/BemHelper';
+import { buttonProps } from 'services/A11y';
 import { paths, bundleStatuses, bundleType } from 'modules/Vocabulary/const';
 import * as moment from 'moment';
 import {
@@ -39,6 +40,7 @@ import { fullDateFormat } from 'const/formats';
 import ModalEditNotifications from './components/ModalEditNotifications';
 import ModalRequestLicenses from './components/ModalRequestLicenses';
 import ModalShare from './components/ModalShare';
+import ModalRestoreUnavailable from './components/ModalRestoreUnavailable';
 
 require('./style.scss');
 
@@ -79,16 +81,18 @@ interface IDownloadHistoryDispatchProps {
   load: () => (dispatch: Function) => any;
   remove: (id: number) => Promise<void>;
   restore: (id: number) => Promise<void>;
+  checkRestoreAvailability: (id: number) => Promise<any>;
   share: (id: number) => Promise<void>;
   showNotifications: Function;
   checkAvailability: Function;
   showRequestModal: Function;
+  showRestoreUnavailableModal: Function;
   showShareModal: Function;
 };
 
 interface IDownloadHistoryProps extends IDownloadHistoryStateProps, IDownloadHistoryDispatchProps {
   removeBundle: (id: number) => any;
-  restoreBundle: (id: number) => any;
+  restoreBundle: (bundle: IDownloadRequest) => any;
   download: (bundle: IDownloadRequest) => any;
 };
 
@@ -113,8 +117,8 @@ function BundleName({ name, date, onClick, isOpened, type, releaseVersion, vocab
   const dateFormat = fullDateFormat;
   const classes = BEMHelper('bundle-caption');
   const isAlreadyShared = downloadShareDTO && downloadShareDTO.ownerUsername === currentUser;
-  return <div {...classes()} onClick={onClick}>
-    <span {...classes({ element: 'opener', modifiers: { opened: isOpened } })}>keyboard_arrow_right</span>
+  return <div {...classes()} onClick={onClick} {...buttonProps(onClick)} aria-expanded={isOpened}>
+    <span {...classes({ element: 'opener', modifiers: { opened: isOpened } })} aria-hidden="true">keyboard_arrow_right</span>
     <div {...classes('title-wrapper')}>
       {name}
       <span {...classes('date')}>{moment(date).format(dateFormat)}</span>
@@ -166,9 +170,9 @@ function BundleTitle({ bundle, removeBundle, toggle, isExpanded, restore, downlo
            <Button
              {...classes('restore-button')}
              mods={['success', 'rounded']}
-             onClick={() => restore(bundle.id)}
+             onClick={() => restore(bundle)}
            >
-             Restore
+             Regenerate
            </Button>
          }
        </div>
@@ -203,7 +207,7 @@ function VocabsList(props: IDownloadHistoryProps & IDownloadHistoryStatefulProps
         <Button onClick={showNotifications} mods={['submit', 'rounded']}>Notifications</Button>
       </Toolbar>
       <Accordion activeItems={[expandedBundleId]}>
-        {history && history.map((bundle: IDownloadRequest, index: number) =>
+        {history && history.map((bundle: IDownloadRequest) =>
           <AccordionItem
             title={<BundleTitle
               bundle={bundle}
@@ -217,7 +221,8 @@ function VocabsList(props: IDownloadHistoryProps & IDownloadHistoryStatefulProps
               currentUser={currentUser}
              />}
             {...classes('bundle-caption')}
-            key={`caption${index}`}
+            key={bundle.id}
+            uuid={`bundle-${bundle.id}`}
             slug={bundle.id}
           >
             <Table
@@ -253,6 +258,7 @@ function VocabsList(props: IDownloadHistoryProps & IDownloadHistoryStatefulProps
       <ModalEditNotifications />
       <ModalRequestLicenses />
       <ModalShare />
+      <ModalRestoreUnavailable />
     </div>
   );
 }

@@ -38,10 +38,12 @@ interface ILicensesStateProps {
 	pages: number;
 	path: string;
 	username: string;
+	pendingCount: number;
 };
 interface ILicensesDispatchProps {
 	load: (page: number, pageSize: number, username?: string, pendindOnly?: boolean) =>
 		(dispatch: Function) => any;
+	loadPendingCount: () => (dispatch: Function) => any;
 	openModal: () => (dispatch: Function) => any;
 	goToPage: (address: string) => (dispatch: Function) => any;
 };
@@ -60,6 +62,7 @@ class Licenses extends Component<ILicensesProps, void> {
 
 	componentWillMount() {
 		this.props.load(this.props.page, pageSize, this.props.username, this.props.pendingOnly);
+		this.props.loadPendingCount();
 	}
 
 	componentWillReceiveProps(nextProps: ILicensesStateProps) {
@@ -86,6 +89,7 @@ function mapStateToProps(state: Object, ownProps: any): ILicensesStateProps {
 	const pendingOnly = get(ownProps, 'routeParams.pending') === 'pending';
 	const page = parseInt(get(state, 'routing.locationBeforeTransitions.query.page', '1'), 0);
 	const pages = get(state, 'admin.licenses.queryResult.totalPages', 0);
+	const pendingCount = get(state, 'admin.licensePendingCount.queryResult.count', 0);
 	const path = get(state, 'routing.locationBeforeTransitions', {
     pathname: paths.licenses(pendingOnly),
     search: '',
@@ -93,17 +97,20 @@ function mapStateToProps(state: Object, ownProps: any): ILicensesStateProps {
   const username = get(state, 'form.licenseFilter.values.username', '');
 
 	return {
-		isLoading: get(state, 'vocabulary.vocabularies.isLoading', false),
+		isLoading: get(state, 'admin.licenses.isLoading', false)
+			|| get(state, 'admin.licensePendingCount.isLoading', false),
 		pendingOnly,
 		page,
 		pages,
 		path: path.pathname + path.search,
+		pendingCount,
 		username,
 	};
 }
 
 const mapDispatchToProps = {
 	load: actions.licenses.load,
+	loadPendingCount: actions.licenses.loadPendingCount,
 	openModal: () => ModalUtils.actions.toggle(modal.addPermission, true),
 	goToPage: (address: string) => push(address),
 };
