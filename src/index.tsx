@@ -30,7 +30,6 @@ import 'core-js/fn/array/find';
 
 import * as ReactDOM from 'react-dom';
 import bootstrap from './bootstrap';
-import { StartAnalytics } from 'services/Gtagger';
 import { initAthenaSessionProtection } from 'services/AthenaSession';
 
 if (!Array.prototype.includes) {
@@ -43,5 +42,4 @@ const rootEl = document.getElementById('app');
 initAthenaSessionProtection();
 bootstrap().then(app => {
 	ReactDOM.render(app, rootEl);
-	StartAnalytics();
 });
