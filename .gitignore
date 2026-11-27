@@ -6,3 +6,15 @@ dist
 .idea/
 CLAUDE.md
 Athena.code-workspace
+
+# Local migration workspace and operational reports
+/reconciliation/
+/athena-identity-migration.md
+/athena-validation-security-review.md
+
+# Local credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key

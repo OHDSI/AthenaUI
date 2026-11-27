@@ -64,6 +64,28 @@ $namespace: 'at-';
       }
     }
 
+    &__browser-check-warning {
+      align-items: center;
+      background: #fff3cd;
+      border-bottom: 1px solid #e0b94f;
+      color: #5f4700;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      padding: 12px 24px;
+
+      button {
+        background: transparent;
+        border: 1px solid currentColor;
+        border-radius: 3px;
+        color: inherit;
+        cursor: pointer;
+        flex-shrink: 0;
+        margin-left: 24px;
+        padding: 7px 12px;
+      }
+    }
+
     & .ac-header__menu-item {
       margin-left: 0;
     }

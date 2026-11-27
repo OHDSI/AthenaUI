@@ -20,6 +20,4 @@
  *
  */
 
-import Login from './container';
-
-export default Login;
+export { default } from './LocalLogin';

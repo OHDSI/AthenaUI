@@ -25,7 +25,7 @@ import BEMHelper from 'services/BemHelper';
 import { apiPaths, paths } from 'modules/Auth/const';
 import { paths as VocabularyPaths } from 'modules/Vocabulary/const';
 import { paths as AdminPaths } from 'modules/Admin/const';
-import { Avatar, Link } from 'arachne-ui-components';
+import { Avatar, FormError, Link } from 'arachne-ui-components';
 import Dropdown from 'react-simple-dropdown';
 import { DropdownTrigger, DropdownContent } from 'react-simple-dropdown';
 import {
@@ -43,8 +43,7 @@ interface IUserMenuState {
 interface IUserMenuDispatch {
   loadPrincipal: Function,
   resetPrincipal: Function,
-  logoutLocal: Function,
-  logoutSLO: Function,
+  logout: () => Promise<void>,
 };
 
 interface IUserMenuProps extends IUserMenuState, IUserMenuDispatch {};
@@ -72,6 +71,7 @@ function UserMenu(props) {
           </div>
           <div {...classes('user-name')}>
             {fullname}
+            {props.logoutError && <span role="alert"><FormError error={props.logoutError} /></span>}
           </div>
           <span {...classes('arrow')}>play_arrow</span>
         </DropdownTrigger>

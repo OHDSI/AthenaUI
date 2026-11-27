@@ -36,12 +36,11 @@ export default function EmailListInput({ fields }) {
             </div>
 
             <Button
-                disabled={fields.length === 0}
                 {...classes('submit')}
                 type="submit"
                 mods={['success', 'rounded']}
             >
-                Share
+                {fields.length ? 'Share' : 'Clear sharing'}
             </Button>
         </div>
     );

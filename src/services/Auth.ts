@@ -22,11 +22,9 @@
 
 import * as get from 'lodash/get';
 import { push as goToPage } from 'react-router-redux';
-import { authTokenName, loginPath as rawLoginPath } from 'const';
+import { authTokenName, loginPath } from 'const';
 import authActions from 'modules/Auth/actions';
 import { IStoreAsync } from 'stores/configureStore';
-
-const loginPath = rawLoginPath + '?forceSSO=true';
 
 class Auth {
 	private store: IStoreAsync;
@@ -48,7 +46,8 @@ class Auth {
 	};
 
 	onAccessDenied = () => {
-		const backUrl = window.location.href;
+		const { pathname, search, hash } = window.location;
+		const backUrl = pathname + search + hash;
 		this.store.dispatch(
 			authActions.core.setBackUrl(backUrl)
 		);
@@ -58,15 +57,14 @@ class Auth {
 	};
 
 	requireOnPathEnter = (nextState, replace, callback) => {
-	  const token = localStorage.getItem(authTokenName);
-	  if (!token) {
-	  	const backUrl = nextState.location.pathname;
-	  	this.store.dispatch(
-	  		authActions.core.setBackUrl(backUrl)
-	  	);
-	  	replace(loginPath);
-	  }
-	  return callback();
+		const token = localStorage.getItem(authTokenName);
+		if (!token) {
+			const { pathname, search, hash } = nextState.location;
+			const backUrl = pathname + (search || '') + (hash || '');
+			this.store.dispatch(authActions.core.setBackUrl(backUrl));
+			replace(loginPath);
+		}
+		return callback();
 	}
 
 }
